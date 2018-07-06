@@ -20,6 +20,7 @@
 
 /*
 	This struct is used to store potential crewswap locations.
+
 */
 typedef struct
 {
