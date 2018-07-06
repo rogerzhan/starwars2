@@ -1,0 +1,2061 @@
+#$LastChangedDate: 2008-01-23 14:23:17 -0500 (Wed, 23 Jan 2008) $
+#$Revision: 6955 $
+#$LastChangedBy: lzhan $
+#$HeadURL: http://csintranetdev01/repos/trunk/optimizer/config/snapshotOptimParams.txt $
+#$Id: snapshotOptimParams.txt 6955 2008-01-23 19:23:17Z lzhan $
+# this is the optimParams.txt to be used LOCALLY
+pdataPath = localpdata.txt
+#database = schedule
+#database_oag = oag
+#remotedatabase = schedule
+#oracleDB  =  CSFLTOPS
+#oracleDBSS = ssoft
+logDir = .\LogFiles
+verbose = Y
+updateRemoteServer = N
+oracleDirect = 0
+oracleScript = "c:/project/optimizerOAG/optProjLocal/CSHOpt_main/Debug/oracle/runOracleSql.sh" 
+
+################################################################################
+# default taxiIn and taxiOut times
+################################################################################
+# select
+#  round(avg(abs(actualoff - actualout) * 1440)) AS avg_diff_in_minutes
+# from
+#  logpageleg
+# where
+#  scheduledout >= to_date('2005-03-09 00:00','YYYY-MM-DD HH24:MI') and
+#  actualoff is not null and
+#  actualout is not null;
+# 
+# avg_diff_in_minutes
+# ===================
+#                   8
+# 
+# select
+#  round(avg(abs(actualin - actualon) * 1440)) AS avg_diff_in_minutes
+# from
+#  logpageleg
+# where
+#  scheduledout >= to_date('2005-03-09 00:00','YYYY-MM-DD HH24:MI') and
+#  actualin is not null and
+#  actualon is not null;
+#
+# avg_diff_in_minutes
+# ===================
+#                   6
+#taxiInTm = 6                   # in minutes. based on average difference between actualin and actualon over the last year
+#taxiOutTm = 8                  # in minutes. based on average difference between actualoff and actualout over the last year
+######################################################################################
+
+################################################################################
+# Parameters read in by function readOptParams() in CSHOpt_input.c:
+
+paramsOracle           =     0   #determine if update parameters value from oracle database
+estimateCrewLoc        =     0    #Estimate crew location from bitwise crew assignment
+autoFlyHome            =     0
+beyondPlanningWindowBenefit = 120 #Benefit (per hour) of tour time overlap beyond the planning window.
+changeNxtDayPenalty    =   200.0
+changeTodayPenalty     =  1000.0
+crewDutyAfterCommFlt   =   7      #shreshhold to have crew continue working or get rest after commercial travel, unit Hours
+crewPairBonus          =   100.0
+cutoffForFinalRepo     =   720    #minutes after midnight local time
+dayEndTime             =   540    #minutes after midnight GMT time
+downgrPairPriority1    =     0
+dutyStartFromMidnight  =     0    #minutes after midnight local time in order for crew duty to start - 10/30/07 ANG 6/23/08 RLZ
+earlyCostPH            =   100.0
+earlierAvailability    =     1    #to get earlier availDT for crew - 10/30/07 ANG
+extendCrew             =     1    #to allow going off tour crew to fly home the next day - 04/21/08 ANG
+#groundTravelTm         =    30
+fboTransitTm           =    10
+finalPostFltTm         =    90
+firstPreFltTm          =    90  #90
+fuelStopTm             =    30
+inclContingencyDmd     =     1
+inclInfeasExgSol       =     1
+includeLockedUmlg      =     0
+ignoreSwapLoc          =     0
+ignoreMac              =     0
+ignoreMacDmd           =     0
+ignoreMacOS            =     0
+ignoreMacOSMX          =     0
+ignoreAllOS            =     0
+lateCostPH             =   100.0
+macBonus							 =  1000.0  #bonus of putting Mac owner's trip on the corresponding Mac - MAC - 09/05/08 ANG
+macPenalty             =     0.0  #additional cost per hour for putting a regular demand on Mac - MAC - 10/23/08 ANG
+maintTmForReassign     =   600
+maintTurnTime          =   180		#180
+maxCrewExtension       =   180    #max minutes crew can get home after tour end - 04/21/08 ANG
+maxDutyTm              =   840
+maxFakeMaintRec        =   200
+maxFlightTm            =   600
+maxRepoTm              =   360
+minCharterTime         =   120
+minRestTm              =   600
+minTimeToDuty          =    60
+minTimeToNotify        =    60
+minTmToTourStart       =    60
+crewTourStartInMin     =   0  #minutes after midnight local time a crew can start the tour 
+numToursPerCrewPerItn  =   10   #used when adding new reduced cost columns to each LP iteration
+overTimeCost           =   600.0
+overTimeHalfCost       =   600.0
+pairingLevel           =     2
+peakDayLevel_1_Adj     =   180
+peakDuration           =   720
+peakGMTDuration        =   720
+peakGMTStart           =   720
+peakOverlapBenefit     =   700
+peakStart              =   480
+planningWindowDuration =     2
+planningWindowStart    =   180   #number of minutes after current time that planning window starts
+planningFakeRuntime    =     0   #number of minutes after current time that fake runtime starts - 02/19/08 ANG
+postArrivalTime        =    45   #
+postFlightTm           =    90   #90
+preBoardTime           =    60
+preFlightTm            =    60   #60
+priorityBenefit        = 10000 800 400 200 #Benefit of pairing pilots with priority 1..4
+prohibitStealingPlanes =     1
+restToDutyTm           =    120
+runType                =     0
+runOptStats            =     0
+runOptStatsByDay       =     0   #Run opt stats, broken down by day - 12/05/08 ANG
+runWithContingency     =     0
+taxiInTm               =     6
+taxiOutTm              =     8
+ticketCostFixed        =   303.14   #150.0
+ticketCostVar          =   0.085    #0.05
+travelcutoff				   =    24   #number of HOURS after (fake) runtime the travel info will be read - 09/11/09 ANG
+turnTime               =    60   #60
+uncovDemoPenalty       =  20000.0
+uncovMaintPenalty      =  30000.0
+uncovFlyHomePenalty    =   5000.0  #Penalty for not bringing PIC home - 04/22/08 ANG
+uncovFlyHomePenalty2   =   2500.0  #Penalty for not bringing SIC home - 04/22/08 ANG
+vectorWin              =    60		#60
+withOag                =    0
+withCTC                =    1
+withMac								 = 		1
+xsCharterPenalty       =    0.0 2000.0 5000.0
+dutyNodeAdjInterval    =  30    #30 In minutes, used in createOneTripNodes to flex the trip
+earlyCostPH_recovery   =  100.0 #penalty cost per hour for starting a recovery trip early
+lateCostPH_recovery    =  100.0 #penalty cost per hour for starting a recovery trip late
+recoveryAdj_early      =  60    #flex earlier for recovery demand (minutes)
+recoveryAdj_late       =  180   #flex later for recovery demand (minutes)
+downgradePenaltyRatio  =  0.2   #incentive for not  downgradeing in recovery, relative to charter cost
+cutoffForShortDuty     =  240   #minutes after midnight local time RLZ
+shortDutyTm            =  480   #in minute, duty time for a crew starting before cutyoffForShortDuty RLZ
+minRestTmLong          =  960   # rest time for early duty
+exgCPACLock            =  0     #flag for not re assign existing crew pairs
+exgCPACBonus           =  0  #CPAC - 02/19/09 ANG
+updateforSimu          =  0   #determine if write data in proposed_managedleg into managedleg table, i.e, used for simulation
+sendhomecutoff         =  12  #beyond this parameter will buy tickets for crew back home  
+
+
+
+################################################################################
+
+################################################################################
+# aircraft type list
+################################################################################
+# ac_type_names values are used to prefix _ac_type_id, _seq_pos, _chrtr_cost, _oper_cost, _taxi_cost
+# to get the variable names below. Make sure ac_type_names is in sequence position order.
+ac_type_names = CJ1 Bravo CJ3 XLS Sov
+
+CJ1_ac_type_id   =    6
+CJ1_seq_pos      =    3
+CJ1_chrtr_cost   = 8789.0
+CJ1_oper_cost    = 1804.00
+CJ1_taxi_cost    =   57.2 # MADE THIS UP
+CJ1_std_rev      = 4945.00
+CJ1_maxUpgrades  = 1
+CJ1_capacity     = 6
+CJ1_mac_cost	   = 3067.00
+
+Bravo_ac_type_id =    5
+Bravo_seq_pos    =    4
+Bravo_chrtr_cost = 8028.0
+Bravo_oper_cost  = 1855.00
+Bravo_taxi_cost  =   67.1 # MADE THIS UP
+Bravo_std_rev    = 5445.00
+Bravo_maxUpgrades  = 1
+Bravo_capacity     = 8
+Bravo_mac_cost     = 3154.00
+
+CJ3_ac_type_id   =   54
+CJ3_seq_pos      =    5
+CJ3_chrtr_cost   = 9384.0
+CJ3_oper_cost    = 1425.00
+CJ3_taxi_cost    =  112.3 # MADE THIS UP
+CJ3_std_rev      = 5700.00
+CJ3_maxUpgrades  = 1
+CJ3_capacity     = 6
+CJ3_mac_cost     = 2422.00
+
+XLS_ac_type_id =   11
+XLS_seq_pos    =    6
+XLS_chrtr_cost = 9709.0
+XLS_oper_cost  = 1952.00
+XLS_taxi_cost  =  131.5 # MADE THIS UP
+XLS_std_rev    = 7145.00
+XLS_maxUpgrades  = 1
+XLS_capacity     = 9
+XLS_mac_cost     = 3504.00
+
+Sov_ac_type_id =   52
+Sov_seq_pos    =    7
+Sov_chrtr_cost = 10261.0
+Sov_oper_cost  = 2301.00
+Sov_taxi_cost  =  105.1 # MADE THIS UP
+Sov_std_rev    = 8600.00
+Sov_maxUpgrades  = 0
+Sov_capacity     = 9
+Sov_mac_cost     = 4167.00
+
+downgradeRecovery = 1 2 3 4
+upgradeRecovery = 4 3 2 1
+
+
+# Runway graph values
+##############################################
+## These are numbers from Matt. L email dated
+## on May 1st.
+##############################################
+##                          minimum   minimum
+##                           runway    runway
+##                           length    length
+##   ac type     altitude       dry       wet
+#############   ########## ######### #########
+CJ1_runway00    =      0      4000      5300
+CJ1_runway01    =   3000      4000      5600
+CJ1_runway02    =   6000      4400      6000
+CJ1_runway03    =  12000      9800      9800
+Bravo_runway00  =      0      4000      6100
+Bravo_runway01  =   3000      4400      6800
+Bravo_runway02  =   6000      5000      7700
+Bravo_runway03  =  12000      6800      10500
+CJ3_runway00    =      0      4000      5300
+CJ3_runway01    =   3000      4000      5700
+CJ3_runway02    =   6000      4000      6100
+CJ3_runway03    =  12000      5200      6800
+XLS_runway00    =      0      4000      6100
+XLS_runway01    =   3000      4300      6500
+XLS_runway02    =   6000      4600      7000
+XLS_runway03    =  12000      6300      8500
+Sov_runway00    =      0      4000      5100
+Sov_runway01    =   3000      4000      5400
+Sov_runway02    =   6000      4200      5800
+Sov_runway03    =  12000      5500      6900
+##############################################
+# create aircraftType-airport (type 3) exclusions based on WET or DRY runway lengths.
+type_3_exclusions = DRY
+
+
+################################################################################
+# default Fuel Stop time
+fuelStopTime = 30 # in minutes. I just made this number up. We can adjust it as required. For now logic assumes it does not include taxi time.
+################################################################################
+
+
+legSQL = "select distinct\n\
+    'mgdleg' AS rowtype,\n\
+    mlg.managedlegid AS rec_id,\n\
+    a.aircraftid AS aircraftid,\n\
+    a.registration AS registration,\n\
+    mlg.demandid AS demandid,\n\
+    mlg.schedoutaptid AS outaptid,\n\
+    mlg.schedout_icao AS outicao,\n\
+    mlg.schedinaptid AS inaptid,\n\
+    mlg.schedin_icao AS inicao,\n\
+    mlg.schedoutfboid AS outfboid,\n\
+    mlg.schedinfboid AS infboid,\n\
+    mlg.schedout AS rec_outtime,\n\
+    mlg.schedin AS rec_intime,\n\
+    mlg.manuallyassigned AS manuallyassigned\n\
+from\n\
+    managedleg mlg,\n\
+    managedaircraft ma,\n\
+    schedulingview sv,\n\
+    aircraft a,\n\
+    fractionalprogram fp\n\
+where\n\
+    mlg.schedout >= '${windowStart}' and \n\
+    mlg.schedout < '${windowEnd}' and \n\
+    ma.aircraftid = mlg.aircraftid and \n\
+    sv.schedulingviewid = ma.schedulingviewid and \n\
+    mlg.scenarioid = sv.masterscenarioid and \n\
+    a.aircraftid = mlg.aircraftid\n\
+union all\n\
+select distinct\n\
+    'logmgdleg' AS rowtype,\n\
+    lpl.logpagelegid AS rec_id,\n\
+    a.aircraftid AS aircraftid,\n\
+    lpl.registration AS registration,\n\
+    lpl.demandid AS demandid,\n\
+    lpl.departureairportid AS outaptid,\n\
+    lpl.outapt_icao AS outicao,\n\
+    lpl.arrivalairportid AS inaptid,\n\
+    lpl.inapt_icao AS inicao,\n\
+    lpl.departurefboid AS outfboid,\n\
+    lpl.arrivalfboid AS infboid,\n\
+    IFNULL(lpl.actualout, lpl.scheduledout) AS rec_outtime,\n\
+    IFNULL(lpl.actualin, lpl.scheduledin) AS rec_intime,\n\
+    0 AS manuallyassigned\n\
+from\n\
+    logpageleg lpl,\n\
+    aircraft a,\n\
+    fractionalprogram fp\n\
+where\n\
+    lpl.scheduledout >= '${windowStart}' and \n\
+    lpl.scheduledout < '${windowEnd}' and \n\
+    a.registration = lpl.registration\n\
+order by\n\
+ rec_outtime"
+ 
+################################################################################
+#Fuel  Stop Leg  in managedLeg and logpageleg
+
+
+fuelLegSQL = "select distinct\n\
+    'mgdleg' AS rowtype,\n\
+    mlg.managedlegid AS rec_id,\n\
+    a.aircraftid AS aircraftid,\n\
+    a.registration AS registration,\n\
+    mlg.demandid AS demandid,\n\
+    mlg.schedoutaptid AS outaptid,\n\
+    mlg.schedout_icao AS outicao,\n\
+    mlg.schedinaptid AS inaptid,\n\
+    mlg.schedin_icao AS inicao,\n\
+    mlg.schedoutfboid AS outfboid,\n\
+    mlg.schedinfboid AS infboid,\n\
+    mlg.schedout AS rec_outtime,\n\
+    mlg.schedin AS rec_intime\n\
+from\n\
+    (\n\
+    select * from\n\
+        managedleg where demandid in (\n\
+        select demandid from managedleg group by demandid\n\
+        having count(demandid) > 1 )\n\
+    )mlg,\n\
+    managedaircraft ma,\n\
+    schedulingview sv,\n\
+    aircraft a,\n\
+    fractionalprogram fp\n\
+where\n\
+    mlg.schedout >= '${windowStart}' and \n\
+    mlg.schedout < '${windowEnd}' and \n\
+    ma.aircraftid = mlg.aircraftid and \n\
+    sv.schedulingviewid = ma.schedulingviewid and \n\
+    mlg.scenarioid = sv.masterscenarioid and \n\
+    a.aircraftid = mlg.aircraftid\n\
+union all\n\
+select distinct\n\
+    'logmgdleg' AS rowtype,\n\
+    lpl.logpagelegid AS rec_id,\n\
+    a.aircraftid AS aircraftid,\n\
+    lpl.registration AS registration,\n\
+    lpl.demandid AS demandid,\n\
+    lpl.departureairportid AS outaptid,\n\
+    lpl.outapt_icao AS outicao,\n\
+    lpl.arrivalairportid AS inaptid,\n\
+    lpl.inapt_icao AS inicao,\n\
+    lpl.departurefboid AS outfboid,\n\
+    lpl.arrivalfboid AS infboid,\n\
+    IFNULL(lpl.actualout, lpl.scheduledout) AS rec_outtime,\n\
+    IFNULL(lpl.actualin, lpl.scheduledin) AS rec_intime\n\
+from\n\
+    (\n\
+    select * from\n\
+        logpageleg where demandid in (\n\
+        select demandid from logpageleg group by demandid\n\
+        having count(demandid) > 1 )\n\
+    )lpl,\n\
+    aircraft a,\n\
+    fractionalprogram fp\n\
+where\n\
+    lpl.scheduledout >= '${windowStart}' and \n\
+    lpl.scheduledout < '${windowEnd}' and \n\
+    a.registration = lpl.registration\n\
+order by\n\
+ rec_outtime"
+ 
+ 
+demandSQL = "select\n\
+ d.demandid,\n\
+ d.ownerid,\n\
+ d.contractid,\n\
+ d.outaptid,\n\
+ d.outfboid,\n\
+ d.inaptid,\n\
+ d.infboid,\n\
+ d.outtime,\n\
+ d.intime,\n\
+ c.flexschedule,\n\
+ at.aircrafttypeid,\n\
+ f.sequenceposition,\n\
+ at.name as ac_type,\n\
+ d.numberofpassengers,\n\
+ outapt.countryid as outCountryID,\n\
+ inapt.countryid as inCountryID,\n\
+ outapt.mainrunwaylength as outRunway,\n\
+ inapt.mainrunwaylength as inRunway\n\
+from\n\
+ aircrafttype at,\n\
+ fractionalprogram f,\n\
+ airport outapt,\n\
+ airport inapt,\n\
+ demand d left join contract c on\n\
+ d.contractid = c.contractid\n\
+where\n\
+ (\n\
+ (d.outtime >= '${windowStart}' and \n\
+ d.outtime < '${windowEnd}')\n\
+ or d.demandid in (\n\
+  select distinct\n\
+      demandid\n\
+  from\n\
+      managedleg mlg\n\
+  where\n\
+      mlg.schedout >= '${windowStart}' and \n\
+      mlg.schedout < '${windowEnd}'\n\
+  union all\n\
+  select distinct\n\
+      demandid\n\
+  from\n\
+      logpageleg lpl\n\
+  where\n\
+      lpl.scheduledout >= '${windowStart}' and \n\
+      lpl.scheduledout < '${windowEnd}'\n\
+    )\n\
+  ) and \n\
+  d.demandid not in (\n\
+  select distinct\n\
+    demandid\n\
+  from unmanagedleg umlg\n\
+  where\n\
+    umlg.scheduledout >= '${windowStart}' and \n\
+    umlg.scheduledout < '${windowEnd}'  and \n\
+    umlg.manuallyassigned = 1\n\
+ ) and \n\
+ f.fractionalprogramid = d.fractionalprogramid and \n\
+ at.aircrafttypeid = f.aircrafttypeid and \n\
+ outapt.airportid = d.outaptid and \n\
+ inapt.airportid = d.inaptid\n\
+order by\n\
+ d.outtime"
+
+#################################################################################
+#allDemandSQL : get all demands including ones in locked charters - 02/12/08 ANG
+#################################################################################
+allDemandSQL = "select\n\
+ d.demandid,\n\
+ d.ownerid,\n\
+ d.contractid,\n\
+ d.outaptid,\n\
+ d.outfboid,\n\
+ d.inaptid,\n\
+ d.infboid,\n\
+ d.outtime,\n\
+ d.intime,\n\
+ c.flexschedule,\n\
+ at.aircrafttypeid,\n\
+ f.sequenceposition,\n\
+ at.name as ac_type,\n\
+ d.numberofpassengers,\n\
+ outapt.countryid as outCountryID,\n\
+ inapt.countryid as inCountryID,\n\
+ outapt.mainrunwaylength as outRunway,\n\
+ inapt.mainrunwaylength as inRunway\n\
+from\n\
+ aircrafttype at,\n\
+ fractionalprogram f,\n\
+ airport outapt,\n\
+ airport inapt,\n\
+ demand d left join contract c on\n\
+ d.contractid = c.contractid\n\
+where\n\
+ (\n\
+ (d.outtime >= '${windowStart}' and \n\
+ d.outtime < '${windowEnd}')\n\
+ or d.demandid in (\n\
+  select distinct\n\
+      demandid\n\
+  from\n\
+      managedleg mlg\n\
+  where\n\
+      mlg.schedout >= '${windowStart}' and \n\
+      mlg.schedout < '${windowEnd}'\n\
+  union all\n\
+  select distinct\n\
+      demandid\n\
+  from\n\
+      logpageleg lpl\n\
+  where\n\
+      lpl.scheduledout >= '${windowStart}' and \n\
+      lpl.scheduledout < '${windowEnd}'\n\
+    )\n\
+  ) and \n\
+ f.fractionalprogramid = d.fractionalprogramid and \n\
+ at.aircrafttypeid = f.aircrafttypeid and \n\
+ outapt.airportid = d.outaptid and \n\
+ inapt.airportid = d.inaptid\n\
+order by\n\
+ d.outtime"
+
+ 
+# whereAreThePlanesSQL
+# Note that for rowtypes 'mgdleg' and 'logmgdleg' we no longer skip positioning # legs (demandid is null) where the rec_outtime is greater than the current time.
+# The current time is EST time + 5 hours so we are comparing zulu to zulu.
+whereAreThePlanesSQL = "select\n\
+    'aircraft' AS rowtype,\n\
+    a.aircraftid AS rec_id,\n\
+    a.aircraftid AS aircraftid,\n\
+    a.registration AS registration,\n\
+    a.aircrafttypeid AS ac_type,\n\
+    null AS demandid,\n\
+    null AS outaptid,\n\
+    null AS outicao,\n\
+    null AS inaptid,\n\
+    null AS inicao,\n\
+    null AS outfboid,\n\
+    null AS infboid,\n\
+    null AS rec_outtime,\n\
+    null AS rec_intime,\n\
+    null AS actualout,\n\
+    null AS actualoff,\n\
+    null AS actualon,\n\
+    null AS actualin,\n\
+    fp.sequenceposition,\n\
+    null AS crewnotified\n\
+from\n\
+    managedaircraft ma,\n\
+    schedulingview sv, aircraft a,\n\
+    fractionalprogram fp\n\
+where\n\
+    sv.schedulingviewid = ma.schedulingviewid and \n\
+    a.aircraftid = ma.aircraftid and \n\
+    fp.aircrafttypeid = a.aircrafttypeid\n\
+union all\n\
+select\n\
+    'mgdleg' AS rowtype,\n\
+    mlg.managedlegid AS rec_id,\n\
+    a.aircraftid AS aircraftid,\n\
+    a.registration AS registration,\n\
+    a.aircrafttypeid AS ac_type,\n\
+    mlg.demandid AS demandid,\n\
+    mlg.schedoutaptid AS outaptid,\n\
+    mlg.schedout_icao AS outicao,\n\
+    mlg.schedinaptid AS inaptid,\n\
+    mlg.schedin_icao AS inicao,\n\
+    mlg.schedoutfboid AS outfboid,\n\
+    mlg.schedinfboid AS infboid,\n\
+    mlg.schedout AS rec_outtime,\n\
+    mlg.schedin AS rec_intime,\n\
+    null AS actualout,\n\
+    null AS actualoff,\n\
+    null AS actualon,\n\
+    null AS actualin,\n\
+    fp.sequenceposition,\n\
+    mlg.crewnotified\n\
+from\n\
+    managedleg mlg,\n\
+    managedaircraft ma,\n\
+    schedulingview sv,\n\
+    aircraft a,\n\
+    fractionalprogram fp\n\
+where\n\
+    mlg.schedout >= date_format(date_sub('${windowStart}', interval 5 day),'%Y/%m/%d %H:%i') and \n\
+    ma.aircraftid = mlg.aircraftid and \n\
+    sv.schedulingviewid = ma.schedulingviewid and \n\
+    mlg.scenarioid = sv.masterscenarioid and \n\
+    a.aircraftid = mlg.aircraftid and \n\
+    fp.aircrafttypeid = a.aircrafttypeid\n\
+union all\n\
+select\n\
+    'logmgdleg' AS rowtype,\n\
+    lpl.logpagelegid AS rec_id,\n\
+    a.aircraftid AS aircraftid,\n\
+    lpl.registration AS registration,\n\
+    a.aircrafttypeid AS ac_type,\n\
+    lpl.demandid AS demandid,\n\
+    lpl.departureairportid AS outaptid,\n\
+    lpl.outapt_icao AS outicao,\n\
+    lpl.arrivalairportid AS inaptid,\n\
+    lpl.inapt_icao AS inicao,\n\
+    lpl.departurefboid AS outfboid,\n\
+    lpl.arrivalfboid AS infboid,\n\
+    IFNULL(lpl.actualout, lpl.scheduledout) AS rec_outtime,\n\
+    IFNULL(lpl.actualin, lpl.scheduledin) AS rec_intime,\n\
+    lpl.actualout AS actualout,\n\
+    lpl.actualoff AS actualoff,\n\
+    lpl.actualon AS actualon,\n\
+    lpl.actualin AS actualin,\n\
+    fp.sequenceposition,\n\
+    null AS crewnotified\n\
+from\n\
+    logpageleg lpl,\n\
+    aircraft a,\n\
+    fractionalprogram fp\n\
+where\n\
+    lpl.scheduledout >= date_format(date_sub('${windowStart}', interval 21 day),'%Y/%m/%d %H:%i') and \n\
+    a.registration = lpl.registration and \n\
+    fp.aircrafttypeid = a.aircrafttypeid and \n\
+    a.aircraftid in (\n\
+    select ma.aircraftid from\n\
+         managedaircraft ma,\n\
+         schedulingview sv\n\
+    where\n\
+         sv.schedulingviewid = ma.schedulingviewid\n\
+    )\n\
+union all\n\
+select\n\
+    'mtcnote' AS rowtype,\n\
+    mn.aircraftmaintenancenoteid AS rec_id,\n\
+    ac.aircraftid AS aircraftid,\n\
+    ac.registration AS registration,\n\
+    ac.aircrafttypeid AS ac_type,\n\
+    null AS demandid,\n\
+    mn.airportid AS outaptid,\n\
+    mn.icao AS outicao,\n\
+    mn.airportid AS inaptid,\n\
+    mn.icao AS inicao,\n\
+    null AS outfboid,\n\
+    null AS infboid,\n\
+    mn.currentstarttime AS rec_outtime,\n\
+    mn.currentendtime AS rec_intime,\n\
+    null AS actualout,\n\
+    null AS actualoff,\n\
+    null AS actualon,\n\
+    null AS actualin,\n\
+    fp.sequenceposition,\n\
+    null AS crewnotified\n\
+from\n\
+    aircraftmaintenancenote mn,\n\
+    aircraft ac,\n\
+    fractionalprogram fp\n\
+where\n\
+    mn.currentstarttime < '${windowEnd}' and \n\
+    ac.aircraftid = mn.aircraftid and \n\
+    fp.aircrafttypeid = ac.aircrafttypeid and \n\
+    ac.aircraftid in (\n\
+    select ma.aircraftid from\n\
+         managedaircraft ma,\n\
+         schedulingview sv\n\
+    where\n\
+         sv.schedulingviewid = ma.schedulingviewid\n\
+    )\n\
+union all\n\
+select\n\
+    'ownersign' AS rowtype,\n\
+    os.ownersigningid AS rec_id,\n\
+    ac.aircraftid AS aircraftid,\n\
+    ac.registration AS registration,\n\
+    ac.aircrafttypeid AS ac_type,\n\
+    null AS demandid,\n\
+    os.airportid AS outaptid,\n\
+    os.airport_icao AS outicao,\n\
+    os.airportid AS inaptid,\n\
+    os.airport_icao AS inicao,\n\
+    null AS outfboid,\n\
+    null AS infboid,\n\
+    os.starttime AS rec_outtime,\n\
+    os.endtime AS rec_intime,\n\
+    null AS actualout,\n\
+    null AS actualoff,\n\
+    null AS actualon,\n\
+    null AS actualin,\n\
+    fp.sequenceposition,\n\
+    null AS crewnotified\n\
+from\n\
+    ownersigning os,\n\
+    aircraft ac,\n\
+    fractionalprogram fp\n\
+where\n\
+    os.starttime < '${windowEnd}' and \n\
+    ac.aircraftid = os.aircraftid and \n\
+    fp.aircrafttypeid = ac.aircrafttypeid and \n\
+    ac.aircraftid in (\n\
+    select ma.aircraftid from\n\
+         managedaircraft ma,\n\
+         schedulingview sv\n\
+    where\n\
+         sv.schedulingviewid = ma.schedulingviewid\n\
+    )\n\
+order by\n\
+    aircraftid, rec_outtime"
+
+#mtcnoteSQL = "select\n\
+#    mn.aircraftmaintenancenoteid,\n\
+#    mn.aircraftid,\n\
+#    mn.airportid,\n\
+#    mn.currentstarttime,\n\
+#    mn.currentendtime\n\
+#from\n\
+#    aircraftmaintenancenote mn\n\
+#where\n\
+#    mn.currentstarttime < '${windowEnd}' and \n\
+#    mn.currentendtime > '${windowStart}' and \n\
+#    not (mn.currentstarttime <= '${windowStart}' and mn.currentendtime >= '${windowEnd}')\n\
+#order by\n\
+#    mn.currentstarttime"
+mtcnoteSQL = "select\n\
+    mn.aircraftmaintenancenoteid,\n\
+    mn.aircraftid,\n\
+    mn.airportid,\n\
+    mn.currentstarttime AS currentstarttime,\n\
+    mn.currentendtime,\n\
+    '0' as apptType,\n\
+    null AS fboid\n\
+from\n\
+    aircraftmaintenancenote mn\n\
+where\n\
+    mn.currentstarttime < '${windowEnd}' and \n\
+    mn.currentendtime > '${windowStart}' and \n\
+    mn.aircraftid in (\n\
+    select ma.aircraftid from\n\
+         managedaircraft ma,\n\
+         schedulingview sv\n\
+    where\n\
+         sv.schedulingviewid = ma.schedulingviewid\n\
+    )\n\
+union all\n\
+select\n\
+    os.ownersigningid,\n\
+    os.aircraftid,\n\
+    os.airportid,\n\
+    os.starttime AS currentstarttime,\n\
+    os.endtime,\n\
+    '1' as apptType,\n\
+    null AS fboid\n\
+from\n\
+    ownersigning os\n\
+where\n\
+    os.starttime < '${windowEnd}' and \n\
+    os.endtime > '${windowStart}' and \n\
+    os.aircraftid in (\n\
+    select ma.aircraftid from\n\
+         managedaircraft ma,\n\
+         schedulingview sv\n\
+    where\n\
+         sv.schedulingviewid = ma.schedulingviewid\n\
+    )\n\
+order by\n\
+    currentstarttime"
+
+
+airportSQL = "select distinct\n\
+    a.airportid,\n\
+    a.icao\n\
+from (\n\
+    select\n\
+        outapt.airportid,\n\
+        outapt.icao\n\
+    from\n\
+        demand d,\n\
+        airport outapt\n\
+    where\n\
+        d.outtime >= '${windowStart}' and \n\
+        d.outtime < '${windowEnd}' and \n\
+        outapt.airportid = d.outaptid\n\
+    union all\n\
+    select\n\
+        inapt.airportid,\n\
+        inapt.icao\n\
+    from\n\
+        demand d,\n\
+        airport inapt\n\
+    where\n\
+        d.outtime >= '${windowStart}' and \n\
+        d.outtime < '${windowEnd}' and \n\
+        inapt.airportid = d.inaptid\n\
+    union all\n\
+    select\n\
+        mn.airportid,\n\
+        apt.icao\n\
+    from\n\
+        aircraftmaintenancenote mn,\n\
+        airport apt\n\
+where\n\
+        mn.currentstarttime < '${windowEnd}' and \n\
+        mn.currentendtime > '${windowStart}' and \n\
+        apt.airportid = mn.airportid\n\
+) a\n\
+order by a.icao"
+
+
+
+
+exclusionSQL = "select\n\
+    exc_type,\n\
+    first_value,\n\
+    second_value\n\
+from\n\
+    exclusion"
+
+curfewexclusionSQL = "select\n\
+    exc_type,\n\
+    first_value,\n\
+    second_value\n\
+from\n\
+    curfewexclusion"
+
+crewIdSQL = "select\n\
+    fc.crewid,\n\
+    fc.employeenumber,\n\
+    fc.baseairportid,\n\
+    a.icao as baseicao,\n\
+    ct.fileas\n\
+from\n\
+    flightcrew fc,\n\
+    contact ct,\n\
+    airport a\n\
+where\n\
+    ct.contactid = fc.crewid and \n\
+    a.airportid = fc.baseairportid"
+
+#bwCrewDataSQL = "select\n\
+#    upper(fc.employeenumber) as employeenumber,\n\
+#    at.name,\n\
+#    at.aircraftTypeID,\n\
+#    date_format(ca.starttime, '%Y/%m/%d %H:%i') AS starttime,\n\
+#    date_format(ca.endtime, '%Y/%m/%d %H:%i') AS endtime,\n\
+#    ca.crewid,\n\
+#    ct.fileas,\n\
+#    ca.crewassignmentid,\n\
+#    ca.aircraftid,\n\
+#    ac.registration,\n\
+#    ca.position,\n\
+#    ca.scenarioid\n\
+#from\n\
+#    crewassignment ca,\n\
+#    aircraft ac,\n\
+#    aircrafttype at,\n\
+#    managedaircraft ma,\n\
+#    schedulingview sv,\n\
+#    contact ct,\n\
+#    flightcrew fc\n\
+#where\n\
+#    ca.starttime < date_format(date_add('${windowEnd}', interval 12 day), '%Y/%m/%d %H:%i') and \n\
+#    ca.endtime > date_format(date_sub('${windowStart}', interval 12 day), '%Y/%m/%d %H:%i') and \n\
+#    ac.aircraftid = ca.aircraftid and \n\
+#    ma.aircraftid = ac.aircraftid and \n\
+#    at.aircrafttypeid = ac.aircrafttypeid and \n\
+#    ma.schedulingviewid is not null and \n\
+#    sv.schedulingviewid = ma.schedulingviewid and \n\
+#    sv.masterscenarioid is not null and \n\
+#    ca.scenarioid = sv.masterscenarioid and \n\
+#    ct.contactid = ca.crewid and \n\
+#    fc.crewid = ca.crewid\n\
+#order by\n\
+#    fc.employeenumber,\n\
+#    ca.starttime,\n\
+#    at.name,\n\
+#    ac.registration"
+
+bwCrewPairDataSQL = "select\n\
+    upper(fc.employeenumber) as employeenumber,\n\
+    at.name,\n\
+    at.aircraftTypeID,\n\
+    date_format(ca.starttime, '%Y/%m/%d %H:%i') AS starttime,\n\
+    date_format(ca.endtime, '%Y/%m/%d %H:%i') AS endtime,\n\
+    ca.crewid,\n\
+    ct.fileas,\n\
+    ca.crewassignmentid,\n\
+    ca.aircraftid,\n\
+    ac.registration,\n\
+    ca.position,\n\
+    ca.scenarioid\n\
+from\n\
+    crewassignment ca,\n\
+    aircraft ac,\n\
+    aircrafttype at,\n\
+    managedaircraft ma,\n\
+    schedulingview sv,\n\
+    contact ct,\n\
+    flightcrew fc\n\
+where\n\
+    ca.starttime <= '${windowStart}' and \n\
+    ca.endtime >= date_format(date_sub('${windowStart}', interval 10 hour), '%Y/%m/%d %H:%i') and \n\
+    ca.position < 3 and \n\
+    ac.aircraftid = ca.aircraftid and \n\
+    ma.aircraftid = ac.aircraftid and \n\
+    at.aircrafttypeid = ac.aircrafttypeid and \n\
+    ma.schedulingviewid is not null and \n\
+    sv.schedulingviewid = ma.schedulingviewid and \n\
+    sv.masterscenarioid is not null and \n\
+    ca.scenarioid = sv.masterscenarioid and \n\
+    ct.contactid = ca.crewid and \n\
+    fc.crewid = ca.crewid\n\
+order by\n\
+    ac.aircraftid,\n\
+    ca.position,\n\
+    ca.position desc,\n\
+    ca.starttime desc"
+
+
+
+bwCrewDataSQL = "select\n\
+    upper(fc.employeenumber) as employeenumber,\n\
+    at.name,\n\
+    at.aircraftTypeID,\n\
+    date_format(ca.starttime, '%Y/%m/%d %H:%i') AS starttime,\n\
+    date_format(ca.endtime, '%Y/%m/%d %H:%i') AS endtime,\n\
+    ca.crewid,\n\
+    ct.fileas,\n\
+    ca.crewassignmentid,\n\
+    ca.aircraftid,\n\
+    ac.registration,\n\
+    ca.position,\n\
+    ca.scenarioid\n\
+from\n\
+    crewassignment ca,\n\
+    aircraft ac,\n\
+    aircrafttype at,\n\
+    managedaircraft ma,\n\
+    schedulingview sv,\n\
+    contact ct,\n\
+    flightcrew fc\n\
+where\n\
+		ca.starttime < date_format(date_add('${windowEnd}', interval 1 day), '%Y/%m/%d %H:%i') and \n\
+		ca.endtime > date_format(date_sub('${windowStart}', interval 5 day), '%Y/%m/%d %H:%i') and \n\
+    ca.position < 3 and \n\
+    ac.aircraftid = ca.aircraftid and \n\
+    ma.aircraftid = ac.aircraftid and \n\
+    at.aircrafttypeid = ac.aircrafttypeid and \n\
+    ma.schedulingviewid is not null and \n\
+    sv.schedulingviewid = ma.schedulingviewid and \n\
+    sv.masterscenarioid is not null and \n\
+    ca.scenarioid = sv.masterscenarioid and \n\
+    ct.contactid = ca.crewid and \n\
+    fc.crewid = ca.crewid\n\
+order by\n\
+    fc.employeenumber,\n\
+    ca.starttime,\n\
+    at.name,\n\
+    ac.registration"
+
+
+ssCrewDataSQL = "select * from ssoftcrew WHERE lempid > 0"
+
+#csCrewDataSQL = "select distinct * from cs_crew_duty order by crewid, scheduled_on, starttime"
+csCrewDataSQL = "select distinct\n\
+    cd.crewid,\n\
+    date_format(cd.starttime, '%Y/%m/%d %H:%i') AS starttime,\n\
+    date_format(cd.endtime, '%Y/%m/%d %H:%i') AS endtime,\n\
+    cd.ca_aircraftid,\n\
+    cd.cd_aircraftid,\n\
+    aa.registration as ca_registration,\n\
+    ad.registration as cd_registration,\n\
+    cd.position,\n\
+    date_format(cd.scheduled_on, '%Y/%m/%d %H:%i') AS scheduled_on,\n\
+    date_format(cd.scheduled_off, '%Y/%m/%d %H:%i') AS scheduled_off,\n\
+    date_format(cd.actual_on, '%Y/%m/%d %H:%i') AS actual_on,\n\
+    date_format(cd.actual_off, '%Y/%m/%d %H:%i') AS actual_off,\n\
+    cd.currdate,\n\
+    cd.lastupdated,\n\
+    cd.scenarioid\n\
+from\n\
+    cs_crew_duty cd,\n\
+    aircraft aa,\n\
+    aircraft ad\n\
+where\n\
+    aa.aircraftid = cd.ca_aircraftid\n\
+    and ad.aircraftid = cd.cd_aircraftid\n\
+order by\n\
+    cd.crewid, cd.scheduled_on, cd.starttime"
+
+charterStatsSQL = "select *\n\
+from charterHistory\n\
+where ownerid in\n\
+    (\n\
+    select distinct dmd.ownerid\n\
+    from\n\
+        demand dmd\n\
+    where\n\
+        dmd.outtime >= '${windowStart}'\n\
+    and \n\
+        dmd.outtime < '${windowEnd}'\n\
+    )"
+
+pairConstraintsSQL = "select\n\
+  pc.pairconstraintid,\n\
+  pc.crewid1,\n\
+  fc1.employeenumber as emp1,\n\
+  ct1.fileas as crewname1,\n\
+  pc.crewid2,\n\
+  fc2.employeenumber as emp2,\n\
+  ct2.fileas as crewname2,\n\
+  pc.Check_Airman,\n\
+  pc.Standards_Captain,\n\
+  pc.Assistant_Chief_Pilot,\n\
+  pc.Office_Management,\n\
+  pc.Unrestricted,\n\
+  pc.High_Minimums,\n\
+  pc.Restricted,\n\
+  pc.priority,\n\
+  pc.startdate,\n\
+  pc.enddate\n\
+from\n\
+  pairconstraints pc,\n\
+  contact ct1,\n\
+  contact ct2,\n\
+  flightcrew fc1,\n\
+  flightcrew fc2\n\
+where pc.crewid2 is not null\n\
+and ct1.contactid = pc.crewid1\n\
+and fc1.crewid = pc.crewid1\n\
+and ct2.contactid = pc.crewid2\n\
+and fc2.crewid = pc.crewid2\n\
+and pc.startdate <= date_format('${windowEnd}','%Y/%m/%d')\n\
+and pc.enddate >= date_format('${windowStart}','%Y/%m/%d')\n\
+union\n\
+select\n\
+  pc.pairconstraintid,\n\
+  pc.crewid1,\n\
+  fc1.employeenumber as emp1,\n\
+  ct1.fileas as crewname1,\n\
+  null as crewid2,\n\
+  null as emp2,\n\
+  null as crewname2,\n\
+  pc.Check_Airman,\n\
+  pc.Standards_Captain,\n\
+  pc.Assistant_Chief_Pilot,\n\
+  pc.Office_Management,\n\
+  pc.Unrestricted,\n\
+  pc.High_Minimums,\n\
+  pc.Restricted,\n\
+  pc.priority,\n\
+  pc.startdate,\n\
+  pc.enddate\n\
+from\n\
+  pairconstraints pc,\n\
+  contact ct1,\n\
+  flightcrew fc1\n\
+where pc.crewid2 is null\n\
+  and ct1.contactid = pc.crewid1\n\
+  and fc1.crewid = pc.crewid1\n\
+and pc.startdate <= date_format('${windowEnd}','%Y/%m/%d')\n\
+and pc.enddate >= date_format('${windowStart}','%Y/%m/%d')"
+
+# use SQL below for running on against MySQL db on your workstation
+intnlCertSQL = "select * from intnlCert"
+
+# use SQL below for running against schedule db on csintranetdev01 or csintranet03
+#intnlCertSQL = "select\n\
+#    ma.aircraftid\n\
+#from\n\
+#    airframe af,\n\
+#    fleeteligibilityxref fx,\n\
+#    fleeteligibilitytype ft,\n\
+#    aircraft ac,\n\
+#    managedaircraft ma\n\
+#where\n\
+#    fx.airframeid = af.airframeid and \n\
+#    fx.FLEETELIGIBILITYTYPEID = 1 and \n\
+#    ft.FLEETELIGIBILITYTYPEID = fx.FLEETELIGIBILITYTYPEID and \n\
+#    ac.registration = af.registration and \n\
+#    ma.aircraftid = ac.aircraftid and \n\
+#    ma.schedulingviewid in(\n\
+#        select\n\
+#            schedulingviewid\n\
+#        from\n\
+#            schedulingview\n\
+#        where\n\
+#            masterscenarioid is not null\n\
+#    )"
+
+demandnumbyzoneSQL = "select CJ1.CJ1_num as CJ1_num,\n\
+                             BRV.BRV_num as BRV_num,\n\
+	                           CJ3.CJ3_num as CJ3_num,\n\
+	                           EXL.EXL_num as EXL_num,\n\
+	                           SOV.SOV_num as Sov_num\n\
+	                    from\n\
+(select count(newdmd.demandid) as CJ1_num from\n\
+  (select * from demand\n\
+     where  outtime >= '${timestart}' and  outtime < '${timeend}' and fractionalprogramid=5) newdmd,\n\
+  (select apt.icao as icao, apt.state as state, sz.zoneid as zoneid  from airport apt, states_zone sz where apt.country ='united states of america' and apt.state = sz.state and sz.zoneid='${zoneid}') zone1\n\
+     where newdmd.outapt_icao = zone1.icao) CJ1,\n\
+(select count(newdmd.demandid) as BRV_num from\n\
+   (select * from demand\n\
+     where  outtime >= '${timestart}' and  outtime < '${timeend}' and fractionalprogramid=6) newdmd,\n\
+   (select apt.icao as icao, apt.state as state, sz.zoneid as zoneid  from airport apt, states_zone sz where apt.country ='united states of america' and apt.state = sz.state and sz.zoneid='${zoneid}') zone1\n\
+     where newdmd.outapt_icao = zone1.icao) BRV,\n\
+(select count(newdmd.demandid) as CJ3_num from\n\
+  (select * from demand\n\
+     where  outtime >= '${timestart}' and  outtime < '${timeend}' and fractionalprogramid=11) newdmd,\n\
+  (select apt.icao as icao, apt.state as state, sz.zoneid as zoneid  from airport apt, states_zone sz where apt.country ='united states of america' and apt.state = sz.state and sz.zoneid='${zoneid}') zone1\n\
+     where newdmd.outapt_icao = zone1.icao) CJ3,\n\
+(select count(newdmd.demandid) as EXL_num from\n\
+  (select * from demand\n\
+     where  outtime >= '${timestart}' and  outtime < '${timeend}' and fractionalprogramid=9) newdmd,\n\
+  (select apt.icao as icao, apt.state as state, sz.zoneid as zoneid  from airport apt, states_zone sz where apt.country ='united states of america' and apt.state = sz.state and sz.zoneid='${zoneid}') zone1\n\
+     where newdmd.outapt_icao = zone1.icao) EXL,\n\
+(select count(newdmd.demandid) as SOV_num from\n\
+  (select * from demand\n\
+     where  outtime >= '${timestart}' and  outtime < '${timeend}' and fractionalprogramid=10) newdmd,\n\
+  (select apt.icao as icao, apt.state as state, sz.zoneid as zoneid  from airport apt, states_zone sz where apt.country ='united states of america' and apt.state = sz.state and sz.zoneid='${zoneid}') zone1\n\
+     where newdmd.outapt_icao = zone1.icao) SOV"
+     
+cstravelSQL = "select\n\
+   traveller_id as crewid,\n\
+   departure_aptid,\n\
+   arrival_aptid,\n\
+   departure_gmt_time as dept_time,\n\
+   Arrival_gmt_time as arr_time,\n\
+   request_id\n\
+from\n\
+   cs_travel_flights\n\
+where\n\
+   departure_gmt_time is not NULL and departure_aptid is not NULL\n\
+   and arrival_aptid is not NULL and arrival_gmt_time is not NULL\n\
+   and departure_gmt_time >=  date_format(date_sub('${windowStart}', interval 2 day), '%Y/%m/%d %H:%i')\n\
+   and departure_gmt_time <=  date_format(date_add('${fakeRuntime}', interval ${travelcutoff}+12 hour), '%Y/%m/%d %H:%i')\n\
+order by\n\
+   crewid, request_id, dept_time, arr_time"  
+
+#12 for the next leg. 
+    
+ cstravelOracleSQL = "select a.TRAVELLER_ID, b.DEPT_AIRPORT_ID, b.ARRIVAL_AIRPORT_ID,\n\
+    to_char(b.DEPARTURE_GMT_TIME, 'YYYY/MM/DD HH24:Mi') as DEPARTURE_GMT_TIME,\n\
+    to_char(b.ARRIVAL_GMT_TIME, 'YYYY/MM/DD HH24:Mi') as ARRIVAL_GMT_TIME,\n\
+    a.REQUEST_ID\n\
+    from CS_TRAVEL_FLIGHT_REQUEST a, CS_TRAVEL_FLIGHT_REQ_DETAIL b\n\
+    WHERE a.FLIGHT_REQUEST_ID = b.FLIGHT_REQUEST_ID\n\
+     and UPPER(b.is_accepted) = 'TRUE'\n\
+     and UPPER(a.REQUEST_STATUS) = 'CLOSED'\n\
+     and b.DEPARTURE_GMT_TIME >= to_date('${windowStart}', 'YYYY/MM/DD HH24:MI') - 2\n\
+     and b.DEPARTURE_GMT_TIME <=  localtogmt(sysdate) + ${travelcutoff}/24 + 12/24\n\
+     and b.DEPT_AIRPORT_ID is not null and b.ARRIVAL_AIRPORT_ID is not null\n\
+     and b.DEPARTURE_GMT_TIME is not null and b.ARRIVAL_GMT_TIME is not null\n\
+order by TRAVELLER_ID, request_ID, DEPARTURE_GMT_TIME, ARRIVAL_GMT_TIME"   
+
+
+peakdayscontractratesOracleSQL = "select\n\
+	                             c.contractid,\n\
+	                             p.level_id,\n\
+	                             p.hourly_rate,\n\
+	                             p.flex_hours\n\
+                            from\n\
+	                             contract c,\n\
+	                             xref_contract x,\n\
+	                             cs_peak_days_contract_rates@bwtoapps p\n\
+                            where\n\
+	                             x.bitwise_number = c.contractid and \n\
+	                             p.chr_id = x.oracle_number\n\
+                            order by\n\
+	                             contractid, level_id" 
+	                             
+csCrewDataOracleSQL = "select\n\
+    cd.crewid,\n\
+    to_char(ca.starttime,'YYYY/MM/DD HH24:MI') as starttime,\n\
+    to_char(ca.endtime,'YYYY/MM/DD HH24:MI') as endtime,\n\
+    ca.aircraftid as ca_aircraftid,\n\
+    cd.aircraftid as cd_aircraftid,\n\
+    aa.registration as ca_registration,\n\
+    ad.registration as cd_registration,\n\
+    ca.position,\n\
+    to_char(cd.scheduled_on,'YYYY/MM/DD HH24:MI') as scheduled_on,\n\
+    to_char(cd.scheduled_off,'YYYY/MM/DD HH24:MI') as scheduled_off,\n\
+    to_char(cd.actual_on,'YYYY/MM/DD HH24:MI') as actual_on,\n\
+    to_char(cd.actual_off,'YYYY/MM/DD HH24:MI') as actual_off,\n\
+    to_char(cd.currdate,'YYYY/MM/DD HH24:MI') as currdate,\n\
+    to_char(cd.lastupdated,'YYYY/MM/DD HH24:MI') as lastupdated,\n\
+    cd.scenarioid\n\
+from\n\
+    cs_crew_duty cd,\n\
+    crewassignment ca,\n\
+    aircraft aa,\n\
+    aircraft ad\n\
+where\n\
+    cd.currdate >= to_date(to_char(to_date('${windowStart}', 'YYYY/MM/DD HH24:MI') - 5,'mm-dd-yyyy'), 'MM-DD-YYYY')\n\
+    and cd.currdate <= to_date(to_char(to_date('${windowEnd}', 'YYYY/MM/DD HH24:MI') + 1,'mm-dd-yyyy'), 'MM-DD-YYYY')\n\
+    and (cd.scheduled_on is not null OR cd.actual_on is not null)\n\
+    and cd.scenarioid in(\n\
+        select\n\
+            distinct sv.masterscenarioid\n\
+        from\n\
+            schedulingview sv\n\
+        where\n\
+            masterscenarioid is not null\n\
+    )\n\
+    and ca.crewid(+) = cd.crewid\n\
+    and ( ca.scenarioid is null OR (\n\
+            ca.scenarioid = cd.scenarioid and (\n\
+                (cd.scheduled_on is not null and \n\
+                 to_char(cd.scheduled_on,'YYYY/MM/DD') <> '1901/01/01' and \n\
+                 (ca.starttime <= cd.scheduled_on and ca.endtime >= cd.scheduled_on)\n\
+                )\n\
+                OR\n\
+                (cd.actual_on is not null and \n\
+                 to_char(cd.actual_on,'YYYY/MM/DD') <> '1901/01/01' and \n\
+                 (ca.starttime <= cd.actual_on and ca.endtime >= cd.actual_on)\n\
+                )\n\
+            )\n\
+        )\n\
+    )\n\
+    and aa.aircraftid = ca.aircraftid\n\
+    and ad.aircraftid = cd.aircraftid\n\
+order by\n\
+    cd.crewid, cd.scheduled_on, ca.starttime"  
+    
+    
+ssCrewDataOracleSQL = "select\n\
+    upper(ei.zbadgeid) AS zbadgeid,\n\
+    d.zdeptdesc,\n\
+    to_char(ej.dtdate,'yyyy/mm/dd hh24:mi') AS dtdate,\n\
+    ei.zlname,\n\
+    ei.zfname,\n\
+    ei.zmname,\n\
+    e.lempid,\n\
+    e.lempinfoid,\n\
+    ej.lpostid,\n\
+    p.zpostdesc,\n\
+    sh.zshiftdesc,\n\
+    ac.zacccodeid,\n\
+    ac.zacccodedesc,\n\
+    rawtohex(edn.znote)\n\
+from\n\
+	ss_test6.empjobs ej,\n\
+	ss_test6.empsched es,\n\
+	ss_test6.emp e,\n\
+	ss_test6.empinfo ei,\n\
+	ss_test6.dept d,\n\
+	ss_test6.posts p,\n\
+	ss_test6.shift sh,\n\
+	ss_test6.empdaynote edn,\n\
+	ss_test6.acccode ac\n\
+where\n\
+	es.dtdate >= to_date(to_char(to_date('${windowStart}', 'YYYY/MM/DD HH24:MI') - 5,'mm-dd-yyyy'), 'MM-DD-YYYY')\n\
+	and es.dtdate < to_date(to_char(to_date('${windowEnd}', 'YYYY/MM/DD HH24:MI') + 7,'mm-dd-yyyy'), 'MM-DD-YYYY')\n\
+	and  ej.lempid=es.lempid\n\
+	and ej.dtdate=es.dtdate\n\
+	and sh.lshiftid(+) = ej.lshiftid\n\
+	and es.lempid=e.lempid\n\
+	and e.lempinfoid=ei.lempinfoid\n\
+	and e.ldeptid=d.ldeptid\n\
+	and ej.lpostid=p.lpostid\n\
+	and edn.lempid(+) = ej.lempid\n\
+	and edn.dtdate(+) = ej.dtdate\n\
+	and ac.lacccodeid(+) = ej.lacccodeid\n\
+order by\n\
+    upper(ei.zbadgeid), d.zdeptdesc, ej.dtdate" 
+    
+    
+ratioOracleSQL = "SELECT distinct\n\
+  b.bitwise_number as contractid,\n\
+  d.aircrafttypeid as contract_ac_typeid,\n\
+  d.name as contract_plane_name,\n\
+  e.aircrafttypeid as ac_typeid,\n\
+  e.name plane_flown_name,\n\
+  c.RATIO\n\
+FROM\n\
+  okc_k_articles_b@bwtoapps a,\n\
+  xref_contract b,\n\
+  cs_conversion_ratio c,\n\
+  aircrafttype d,\n\
+  aircrafttype e,\n\
+  contract f,\n\
+  fractionalprogram g\n\
+WHERE\n\
+  a.dnz_chr_id = b.oracle_number and \n\
+  a.attribute1 is not null and \n\
+  upper(attribute_category) = upper('program hours') and \n\
+  b.BITWISE_NUMBER in(\n\
+    SELECT\n\
+        distinct r.contractid\n\
+      FROM\n\
+        demand d,\n\
+        ownerreservation r\n\
+      WHERE\n\
+        d.outtime >= to_date('${windowStart}', 'YYYY/MM/DD HH24:MI') and \n\
+        d.outtime < to_date('${windowEnd}', 'YYYY/MM/DD HH24:MI') and \n\
+        r.ownerreservationid = d.reservationid\n\
+      ) and \n\
+  c.CONTRACT_TYPE = a.attribute1 and \n\
+  c.plane_own = d.aircrafttypeid and \n\
+  c.PLANE_FLOWN = e.AIRCRAFTTYPEID and \n\
+  b.BITWISE_NUMBER = f.contractid and \n\
+  f.FRACTIONALPROGRAMID = g.FRACTIONALPROGRAMID and \n\
+  g.AIRCRAFTTYPEID = c.PLANE_OWN and \n\
+  e.aircrafttypeid not in(2,8) and \n\
+  d.aircrafttypeid not in(2,8)\n\
+order by b.bitwise_number"
+
+
+upgradeDowngradeOracleSQL = "select a.*, dmd.outaptid, dmd.inaptid, dmd.numberofpassengers from (\n\
+  SELECT\n\
+    o.ownerid,\n\
+    c.contractid,\n\
+    to_char(d.outtime,'YYYY/MM/DD HH24:MI') as dmd_outtime,\n\
+    to_char(ml.schedout,'YYYY/MM/DD HH24:MI') as outtime,\n\
+    d.demandid,\n\
+    ml.managedlegid as otherid,\n\
+    'demand' as type,\n\
+    o.shortname,\n\
+    kw.legkeywordid,\n\
+    kw.keyword as keyword,\n\
+    fc.SEQUENCEPOSITION as contract_seqpos,\n\
+    fc.name as contract_actype,\n\
+    fc.aircrafttypeid as contract_actypeid,\n\
+    fd.SEQUENCEPOSITION as seqpos,\n\
+    fd.name as actype,\n\
+    fd.aircrafttypeid as actypeid\n\
+  FROM\n\
+    demand d, ownerreservation r, contract c, owner o, fractionalprogram fd, fractionalprogram fc,\n\
+    demandlegkeywordusage kwu, legkeyword kw, managedleg ml\n\
+  WHERE\n\
+    d.outtime >= to_date('${windowStart}', 'YYYY/MM/DD HH24:MI') and \n\
+    d.outtime < to_date('${windowEnd}', 'YYYY/MM/DD HH24:MI') and \n\
+    r.ownerreservationid = d.reservationid and \n\
+    c.contractid = r.CONTRACTID and \n\
+    o.ownerid = r.ownerid and \n\
+    fd.fractionalprogramid = d.fractionalprogramid and \n\
+    fc.fractionalprogramid = c.fractionalprogramid and \n\
+    kwu.demandid(+) = d.demandid and \n\
+    kw.legkeywordid(+) = kwu.legkeywordid and \n\
+    ml.demandid(+) = d.demandid\n\
+  union\n\
+  SELECT\n\
+    o.ownerid,\n\
+    c.contractid,\n\
+    to_char(d.outtime,'YYYY/MM/DD HH24:MI') as dmd_outtime,\n\
+    to_char(ml.schedout,'YYYY/MM/DD HH24:MI') as outtime,\n\
+    d.demandid,\n\
+    ml.managedlegid as otherid,\n\
+    'mgdleg' as type,\n\
+    o.shortname,\n\
+    kw.legkeywordid,\n\
+    kw.keyword as keyword,\n\
+    fc.SEQUENCEPOSITION as contract_seqpos,\n\
+    fc.name as contract_actype,\n\
+    fc.aircrafttypeid as contract_actypeid,\n\
+    fm.SEQUENCEPOSITION as seqpos,\n\
+    fm.name as actype,\n\
+    fm.aircrafttypeid as actypeid\n\
+  FROM\n\
+    managedleg ml, demand d, managedaircraft ma, ownerreservation r, contract c, owner o, fractionalprogram fc,\n\
+    fractionalprogram fm, managedlegkeywordusage kwu, legkeyword kw\n\
+  WHERE\n\
+    ml.schedout >= to_date('${windowStart}', 'YYYY/MM/DD HH24:MI') and \n\
+    ml.schedout < to_date('${windowEnd}', 'YYYY/MM/DD HH24:MI') and \n\
+    d.demandid = ml.demandid and \n\
+    ma.aircraftid = ml.aircraftid and \n\
+    r.ownerreservationid = d.reservationid and \n\
+    c.contractid = r.CONTRACTID and \n\
+    o.ownerid = r.ownerid and \n\
+    fc.fractionalprogramid = c.fractionalprogramid and \n\
+    fm.fractionalprogramid = ma.fractionalprogramid and \n\
+    kwu.managedlegid(+) = ml.managedlegid and \n\
+    kw.legkeywordid(+) = kwu.legkeywordid\n\
+  union\n\
+  SELECT\n\
+    o.ownerid,\n\
+    c.contractid,\n\
+    to_char(d.outtime,'YYYY/MM/DD HH24:MI') as dmd_outtime,\n\
+    to_char(lpl.actualout,'YYYY/MM/DD HH24:MI') as outtime,\n\
+    d.demandid,\n\
+    lpl.logpagelegid as otherid,\n\
+    'lpgleg' as type,\n\
+    o.shortname,\n\
+    kw.legkeywordid,\n\
+    kw.keyword as keyword,\n\
+    fc.SEQUENCEPOSITION as contract_seqpos,\n\
+    fc.name as contract_actype,\n\
+    fc.aircrafttypeid as contract_actypeid,\n\
+    fm.SEQUENCEPOSITION as seqpos,\n\
+    fm.name as actype,\n\
+    fm.aircrafttypeid as actypeid\n\
+  FROM\n\
+    logpageleg lpl, demand d, logpage lp, aircraft ac, managedaircraft ma, ownerreservation r, contract c, owner o,\n\
+    fractionalprogram fc, fractionalprogram fm, logpagelegkeywordusage kwu, legkeyword kw\n\
+  WHERE\n\
+    lpl.scheduledout >= to_date('${windowStart}', 'YYYY/MM/DD HH24:MI') and \n\
+    lpl.scheduledout < to_date('${windowEnd}', 'YYYY/MM/DD HH24:MI') and \n\
+    d.demandid = lpl.demandid and \n\
+    lp.logpageid = lpl.logpageid and \n\
+    ac.registration = lp.registration and \n\
+    ma.aircraftid = ac.aircraftid and \n\
+    r.ownerreservationid = d.reservationid and \n\
+    c.contractid = r.CONTRACTID and \n\
+    o.ownerid = r.ownerid and \n\
+    fc.fractionalprogramid = c.fractionalprogramid and \n\
+    fm.fractionalprogramid = ma.fractionalprogramid and \n\
+    kwu.logpagelegid(+) = lpl.logpagelegid and \n\
+    kw.legkeywordid(+) = kwu.legkeywordid\n\
+) a,\n\
+demand dmd\n\
+where dmd.demandid = a.demandid\n\
+order by a.demandid"
+
+timezoneOracleSQL = "select\n\
+     TIMEZONEID,\n\
+     BIAS,\n\
+     DAYLIGHTBIAS,\n\
+     STANDARDTIMEADJMONTH,\n\
+     STANDARDTIMEADJDAYOFWEEK,\n\
+     STANDARDTIMEADJDAY,\n\
+     STANDARDTIMEADJHOUR,\n\
+     STANDARDTIMEADJMINUTE,\n\
+     STANDARDNAMEABREVIATION,\n\
+     STANDARDNAME,\n\
+     DAYLIGHTTIMEADJMONTH,\n\
+     DAYLIGHTTIMEADJDAYOFWEEK,\n\
+     DAYLIGHTTIMEADJDAY,\n\
+     DAYLIGHTTIMEADJHOUR,\n\
+     DAYLIGHTTIMEADJMINUTE,\n\
+     DAYLIGHTNAMEABREVIATION,\n\
+     DAYLIGHTNAME\n\
+from timezone "
+
+macInfoSQL = "select a.aircraftid, a.contractid from maircraftinfo a"
+
+macInfoOracleSQL = "select distinct c.aircraftid, c.contractid\n\
+from contract c, ownercontractxref o where\n\
+c.contractid = o.contractid\n\
+and (c.aircraftid in\n\
+(select a.aircraftid from cs_aircraft_attributes a where upper(a.value) = 'WHOLE'))\n\
+and c.inactive=0"
+
+statSQL = "insert into optimizer_statistics\n\
+select now() rundate,\n\
+    '${windowStart}' pwstart,\n\
+    '%s' username,\n\
+    %d scenarioid,\n\
+    ss.aircrafttypeid aircrafttypeid,\n\
+    IFNULL(tml.coveredLegs,0) coveredLegs,\n\
+    IFNULL(ssa.liveTime,0) liveTime,\n\
+    IFNULL(ssa.countLiveTimeLegs,0) countLiveTimeLegs,\n\
+    IFNULL(ssc.deadHead,0) deadHead,\n\
+    IFNULL(ssc.countDeadHeadLegs,0) countDeadHeadLegs,\n\
+    IFNULL(sse.charterHours,0) charterHours,\n\
+    IFNULL(sse.countCharters,0) countCharters,\n\
+       IFNULL(ssm.DHhrsForDemand,0) DHhrsForDemand,\n\
+       IFNULL(ssm.countDH4Demand,0) countDH4Demand,\n\
+       IFNULL(ssm.DHhrsForMX,0) DHhrsForMX,\n\
+       IFNULL(ssm.countDH4MX,0) countDH4MX,\n\
+       IFNULL(ssm.DHhrsForOS,0) DHhrsForOS,\n\
+       IFNULL(ssm.countDH4OS,0) countDH4OS,\n\
+       IFNULL(ssm.DHhrsForOther,0) DHhrsForOther,\n\
+       IFNULL(ssm.countDH4Other,0) countDH4Other,\n\
+    0 ADDLCOUNT,\n\
+    IFNULL(sso.increv,0) ADDLHRS\n\
+from\n\
+( select t.aircrafttypeid aircrafttypeid from aircrafttype t where t.aircrafttypeid in (5,6,11,52,54)) ss\n\
+LEFT JOIN\n\
+(  select t.aircrafttypeid aircrafttypeid, count(c.demandid) coveredLegs\n\
+  from proposed_managedleg a, demand c, aircraft d, aircrafttype t\n\
+  where a.demandid = c.demandid and d.aircraftid = a.aircraftid\n\
+  and c.outtime >= '${windowStart}' and c.outtime < '${windowEnd}'\n\
+  and d.aircrafttypeid = t.aircrafttypeid\n\
+  and a.scenarioid = %d\n\
+  group by t.aircrafttypeid\n\
+) tml\n\
+ON ss.aircrafttypeid = tml.aircrafttypeid\n\
+LEFT JOIN\n\
+( select c.aircrafttypeid, sum(time_to_sec(timediff(a.schedin, a.schedout)))/3600 liveTime,\n\
+			count(a.schedout) countLiveTimeLegs\n\
+      from proposed_managedleg a, aircraft b, aircrafttype c where a.schedout >= '${windowStart}' and \n\
+      a.schedout < '${windowEnd}'  and a.demandid is not null and \n\
+      a.aircraftid = b.aircraftid and b.aircrafttypeid = c.aircrafttypeid and a.scenarioid = %d\n\
+   group by c.aircrafttypeid) ssa\n\
+ON ss.aircrafttypeid = ssa.aircrafttypeid\n\
+LEFT JOIN\n\
+( select c.aircrafttypeid, sum(time_to_sec(timediff(a.schedin, a.schedout)))/3600 deadHead,\n\
+			count(a.schedout) countDeadHeadLegs\n\
+      from proposed_managedleg a, aircraft b, aircrafttype c where a.schedout >= '${windowStart}' and \n\
+      a.schedout < '${windowEnd}'  and a.demandid is null and a.aircraftid = b.aircraftid and \n\
+      b.aircrafttypeid = c.aircrafttypeid and a.scenarioid = %d\n\
+      group by c.aircrafttypeid) ssc\n\
+ON ss.aircrafttypeid = ssc.aircrafttypeid\n\
+LEFT JOIN\n\
+( select c.aircrafttypeid, sum(time_to_sec(timediff(scheduledin,scheduledout)))/3600 charterHours,\n\
+			count(scheduledout) countCharters\n\
+      from proposed_unmanagedleg a, demand b, fractionalprogram c where a.scheduledout  >= '${windowStart}' and \n\
+      a.scheduledout < '${windowEnd}' and a.demandid = b.demandid and \n\
+      b.fractionalprogramid = c.fractionalprogramid and a.scenarioid = %d\n\
+   group by c.aircrafttypeid) sse\n\
+ON ss.aircrafttypeid = sse.aircrafttypeid\n\
+LEFT JOIN\n\
+(\n\
+      select t.aircrafttypeid,\n\
+          sum(CASE ss.type WHEN 'DM' THEN ss.DHtime ELSE 0 END) DHhrsForDemand,\n\
+          sum(CASE ss.type WHEN 'DM' THEN 1 ELSE 0 END) countDH4Demand,\n\
+          sum(CASE ss.type WHEN 'MX' THEN ss.DHtime ELSE 0 END) DHhrsForMX,\n\
+          sum(CASE ss.type WHEN 'MX' THEN 1 ELSE 0 END) countDH4MX,\n\
+          sum(CASE ss.type WHEN 'OS' THEN ss.DHtime ELSE 0 END) DHhrsForOS,\n\
+          sum(CASE ss.type WHEN 'OS' THEN 1 ELSE 0 END) countDH4OS,\n\
+          sum(CASE WHEN ss.type in ('DM','MX','OS') THEN 0 ELSE ss.DHtime END) DHhrsForOther,\n\
+          sum(CASE WHEN ss.type in ('DM','MX','OS') THEN 0 ELSE 1 END) countDH4Other\n\
+      from(\n\
+            select xxa.aircraftid aircraftid, xxa.DHouttime DHouttime,\n\
+            time_to_sec(IFNULL(timediff(xxa.DHintime, xxa.DHouttime),0))/3600 DHtime, xxb.type type from\n\
+            ( select xa.aircraftid aircraftid, xa.DHInAptID DHInAptID, xa.outtime DHouttime, xa.intime DHintime, min(xb.outtime) nextouttime from\n\
+                  (\n\
+                       select mlg.aircraftid aircraftid, mlg.schedinaptid DHInAptID, mlg.schedout outtime, mlg.schedin intime\n\
+                       from proposed_managedleg mlg where mlg.schedout >= '${windowStart}' and \n\
+                       mlg.schedin < '${windowEnd}' and mlg.demandid is null and mlg.scenarioid = %d\n\
+                  ) xa left outer join\n\
+                  ( select  a.aircraftid aircraftid, a.airportid airportid, a.currentstarttime outtime, 'MX' as type\n\
+                        from aircraftmaintenancenote a where a.currentstarttime >= '${windowStart}' and \n\
+                        a.currentstarttime < '${windowEnd}'\n\
+                        union all\n\
+                        select  a.aircraftid aircraftid, a.airportid airportid, a.starttime outtime, 'OS' as type\n\
+                        from ownersigning a where a.starttime >= '${windowStart}' and a.starttime < '${windowEnd}'\n\
+                        union all\n\
+                      select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid, mlg.schedout outtime, 'DM' as type\n\
+                      from proposed_managedleg mlg where mlg.schedout >= '${windowStart}' and mlg.schedout < '${windowEnd}' and \n\
+                          mlg.scenarioid = %d and demandid is not null) xb\n\
+                  on xa.aircraftid = xb.aircraftid and xa.DHInAptID = xb.airportid and xa.intime > xb.outtime - interval 3 hour and \n\
+                     xa.intime < xb.outtime\n\
+                  group by xa.aircraftid, xa.DHInAptID, xa.outtime, xa.intime) xxa left outer join\n\
+            (         select  a.aircraftid aircraftid, a.airportid airportid, a.currentstarttime outtime, 'MX' as type\n\
+                        from    aircraftmaintenancenote a where a.currentstarttime >= '${windowStart}' and \n\
+                        a.currentstarttime < '${windowEnd}'\n\
+                        union all\n\
+                        select  a.aircraftid aircraftid, a.airportid airportid, a.starttime outtime, 'OS' as type\n\
+                        from    ownersigning a where a.starttime >= '${windowStart}' and a.starttime < '${windowEnd}'\n\
+                        union all\n\
+                      select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid, mlg.schedout outtime, 'DM' as type\n\
+                      from proposed_managedleg mlg where mlg.schedout >= '${windowStart}' and mlg.schedout < '${windowEnd}' and \n\
+                          mlg.scenarioid = %d and demandid is not null)xxb\n\
+            on xxa.aircraftid = xxb.aircraftid and xxa.DHInAptID = xxb.airportid and xxa.nextouttime = xxb.outtime) ss,\n\
+      aircrafttype t, aircraft f\n\
+      where ss.DHouttime >= '${windowStart}' and ss.DHouttime < '${windowEnd}' and ss.aircraftid = f.aircraftid and \n\
+      f.aircrafttypeid = t.aircrafttypeid\n\
+      group by t.aircrafttypeid) ssm \n\
+ON ss.aircrafttypeid = ssm.aircrafttypeid \n\
+LEFT JOIN \n\
+(select a.aircrafttypeid, sum(a.increv) increv from \n\
+  (select at.aircrafttypeid, ir.demandid, \n\
+    (CASE at.aircrafttypeid when 5 then ir.bravo else \n\
+      (CASE at.aircrafttypeid when 11 then ir.excel else \n\
+        (CASE at.aircrafttypeid when 54 then ir.cj3 else \n\
+          (CASE at.aircrafttypeid when 52 then ir.sovereign else 0 END) END) END) END) increv \n\
+  from ( 	select demandid, aircraftid from proposed_managedleg where scenarioid= %d and \n\
+  				schedout >= '${windowStart}' and schedout < '${windowEnd}') m, optimizer_increvenue ir, aircraft at \n\
+  where m.demandid=ir.demandid and ir.scenarioid= %d and m.aircraftid=at.aircraftid) a \n\
+  group by a.aircrafttypeid) sso \n\
+ON ss.aircrafttypeid = sso.aircrafttypeid"
+
+statSchedSQL = "insert into optimizer_statistics\n\
+select now() rundate,\n\
+    '${windowStart}' pwstart,\n\
+    '%s-SCHED' username,\n\
+    %d scenarioid,\n\
+    ss.aircrafttypeid aircrafttypeid,\n\
+    IFNULL(tml.coveredLegs,0) coveredLegs,\n\
+    IFNULL(ssa.liveTime,0) liveTime,\n\
+    IFNULL(ssa.countLiveTimeLegs,0) countLiveTimeLegs,\n\
+    IFNULL(ssc.deadHead,0) deadHead,\n\
+    IFNULL(ssc.countDeadHeadLegs,0) countDeadHeadLegs,\n\
+    IFNULL(sse.charterHours,0) charterHours,\n\
+    IFNULL(sse.countCharters,0) countCharters,\n\
+    IFNULL(ssm.DHhrsForDemand,0) DHhrsForDemand,\n\
+    IFNULL(ssm.countDH4Demand,0) countDH4Demand,\n\
+    IFNULL(ssn.DHhrsContingency,0) DHhrsForMX,\n\
+    IFNULL(ssn.countDH4Contingency,0) countDH4MX,\n\
+    IFNULL(ssf.unCoverHours,0) DHhrsForOS,\n\
+    IFNULL(ssf.unCoverDemand,0) countDH4OS,\n\
+    0 DHhrsForOther,\n\
+    0 countDH4Other,\n\
+    0 ADDLCOUNT,\n\
+    IFNULL(sso.increv,0) ADDLHRS\n\
+from\n\
+( select t.aircrafttypeid aircrafttypeid from aircrafttype t where t.aircrafttypeid in (5,6,11,52,54)) ss\n\
+LEFT JOIN\n\
+(  select t.aircrafttypeid aircrafttypeid, count(c.demandid) coveredLegs\n\
+  from (select distinct demandid, aircraftid from managedleg union all select distinct demandid, \n\
+  			aircraftid from logpageleg) a, \n\
+  demand c, aircraft d, aircrafttype t\n\
+  where a.demandid = c.demandid and d.aircraftid = a.aircraftid\n\
+  and (c.ownerid not in (87359) or c.ownerid is null) \n\
+  and c.outtime >= '${windowStart}' and c.outtime < '${windowEnd}'\n\
+  and d.aircrafttypeid = t.aircrafttypeid\n\
+  group by t.aircrafttypeid\n\
+) tml\n\
+ON ss.aircrafttypeid = tml.aircrafttypeid\n\
+LEFT JOIN\n\
+( select c.aircrafttypeid, sum(elapsedTm) liveTime, count(a.demandid) countLiveTimeLegs \n\
+      from (select m.demandid, m.aircraftid, sum(time_to_sec(timediff(m.schedin, m.schedout)))/3600 elapsedTm from managedleg m, demand d \n\
+            where  m.schedout >= '${windowStart}' and m.schedout < '${windowEnd}' and m.demandid = d.demandid \n\
+            and (d.ownerid not in (87359) or d.ownerid is null) group by m.demandid, m.aircraftid \n\
+            union all \n\
+            select l.demandid, l.aircraftid, sum(time_to_sec(timediff(IFNULL(l.actualin, l.scheduledin), \n\
+            IFNULL(l.actualout,l.scheduledout))))/3600 elapsedTm from logpageleg l, demand d \n\
+            where  l.scheduledout >= '${windowStart}' and l.scheduledout < '${windowEnd}' and l.demandid = d.demandid \n\
+            and (d.ownerid not in (87359) or d.ownerid is null) group by l.demandid, l.aircraftid) a, \n\
+      aircraft b, aircrafttype c where a.demandid is not null and \n\
+      a.aircraftid = b.aircraftid and b.aircrafttypeid = c.aircrafttypeid \n\
+   group by c.aircrafttypeid) ssa\n\
+ON ss.aircrafttypeid = ssa.aircrafttypeid\n\
+LEFT JOIN\n\
+( select c.aircrafttypeid, sum(time_to_sec(timediff(a.schedin, a.schedout)))/3600 deadHead, \n\
+			count(a.schedout) countDeadHeadLegs\n\
+      from (select demandid, aircraftid, schedin, schedout from managedleg union all \n\
+            select demandid, aircraftid, IFNULL(actualin, scheduledin) schedin, \n\
+            IFNULL(actualout,scheduledout) schedout from logpageleg) a, \n\
+      aircraft b, aircrafttype c where a.schedout >= '${windowStart}' and \n\
+      a.schedout < '${windowEnd}'  and a.demandid is null and a.aircraftid = b.aircraftid and \n\
+      b.aircrafttypeid = c.aircrafttypeid \n\
+      group by c.aircrafttypeid) ssc\n\
+ON ss.aircrafttypeid = ssc.aircrafttypeid\n\
+LEFT JOIN\n\
+( select c.aircrafttypeid, sum(time_to_sec(timediff(scheduledin,scheduledout)))/3600 charterHours, \n\
+			count(scheduledout) countCharters\n\
+      from (select demandid, scheduledout, scheduledin from unmanagedleg) a, \n\
+      demand b, fractionalprogram c where a.scheduledout  >= '${windowStart}' and \n\
+      a.scheduledout < '${windowEnd}' and a.demandid = b.demandid and \n\
+      (b.ownerid not in (87359) or b.ownerid is null) and \n\
+      b.fractionalprogramid = c.fractionalprogramid \n\
+   group by c.aircrafttypeid) sse\n\
+ON ss.aircrafttypeid = sse.aircrafttypeid \n\
+LEFT JOIN \n\
+( select c.aircrafttypeid, sum(time_to_sec(timediff(a.intime, a.outtime)))/3600 unCoverHours, \n\
+      count(a.demandid) unCoverDemand from demand a, fractionalprogram c \n\
+      where a.outtime >= '${windowStart}'  and a.outtime < '${windowEnd}' and \n\
+      a.ownerid is not null and a.ownerid not in (87359) and \n\
+      a.fractionalprogramid = c.fractionalprogramid and \n\
+      a.demandid not in ( select a.demandid from managedleg a, demand d \n\
+                          where d.outtime >= '${windowStart}' and d.outtime < '${windowEnd}' and \n\
+                          a.demandid is not null and a.demandid = d.demandid) and \n\
+      a.demandid not in ( select a.demandid from logpageleg  a, demand d \n\
+                              where d.outtime >= '${windowStart}' and d.outtime < '${windowEnd}' and \n\
+                              a.demandid is not null and a.demandid = d.demandid) and \n\
+      a.demandid not in ( select a.demandid from unmanagedleg a, demand d \n\
+                          where d.outtime >= '${windowStart}' and d.outtime < '${windowEnd}' and \n\
+                          a.demandid = d.demandid) \n\
+                          group by c.aircrafttypeid) ssf \n\
+ON ss.aircrafttypeid = ssf.aircrafttypeid "
+
+statSchedSQL2 = "LEFT JOIN\n\
+(select  t.aircrafttypeid, \n\
+          sum(CASE ss.type WHEN 'DM' THEN ss.DHtime ELSE 0 END) DHhrsForDemand, \n\
+          sum(CASE ss.type WHEN 'DM' THEN 1 ELSE 0 END) countDH4Demand \n\
+      from( \n\
+            select xxa.aircraftid aircraftid, xxa.DHouttime DHouttime,  \n\
+            time_to_sec(IFNULL(timediff(xxa.DHintime, xxa.DHouttime),0))/3600 DHtime,  \n\
+            xxb.type type from  \n\
+            (  \n\
+               select xa.aircraftid aircraftid, xa.DHInAptID DHInAptID, xa.outtime DHouttime,  \n\
+               xa.intime DHintime, min(xb.outtime) nextouttime from  \n\
+                  ( \n\
+                      select a.aircraftid aircraftid, detail.schedinaptid DHInAptID,  \n\
+                      detail.schedout outtime, detail.schedin intime  \n\
+                      from \n\
+                      ( \n\
+                        select mlg.aircraftid, max(mlg.schedout) outtime \n\
+                        from (select demandid, aircraftid, schedin, schedout,  \n\
+                        			schedoutaptid, schedinaptid from managedleg  \n\
+                              where schedout >= '${windowStart}' and schedin < '${windowEnd}' \n\
+                              and demandid is null  \n\
+                              union all  \n\
+                              select demandid, aircraftid,  \n\
+                              IFNULL(actualin, scheduledin) schedin,  \n\
+                              IFNULL(actualout,scheduledout) schedout,  \n\
+                              departureairportid schedoutaptid,   \n\
+                              arrivalairportid schedinaptid from logpageleg \n\
+                              where IFNULL(actualout,scheduledout) >= '${windowStart}'  \n\
+                              and IFNULL(actualin, scheduledin) < '${windowEnd}'  \n\
+                              and demandid is null  \n\
+                        ) mlg \n\
+                        group by mlg.aircraftid \n\
+                      ) a, \n\
+                      ( \n\
+                        select demandid, aircraftid, schedin, schedout, schedoutaptid, schedinaptid  \n\
+                        from managedleg  \n\
+                        where schedout >= '${windowStart}' and schedin < '${windowEnd}'  \n\
+                        and demandid is null  \n\
+                        union all  \n\
+                        select demandid, aircraftid,  \n\
+                        IFNULL(actualin, scheduledin) schedin, IFNULL(actualout,scheduledout) schedout,  \n\
+                        departureairportid schedoutaptid,   \n\
+                        arrivalairportid schedinaptid from logpageleg \n\
+                        where IFNULL(actualout,scheduledout) >= '${windowStart}'  \n\
+                        and IFNULL(actualin, scheduledin) < '${windowEnd}'  \n\
+                        and demandid is null  \n\
+                      ) detail \n\
+                      where a.aircraftid = detail.aircraftid and a.outtime = detail.schedout \n\
+                  ) xa left outer join  \n\
+                  (  \n\
+                      select  a.aircraftid aircraftid, a.airportid airportid,  \n\
+                      a.currentstarttime outtime, 'MX' as type  \n\
+                      from aircraftmaintenancenote a  \n\
+                      where a.currentstarttime >= '${windowStart}' and  \n\
+                      str_to_date(a.currentstarttime, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i')  < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') + interval 12 hour  \n\
+                      union all  \n\
+                      select  a.aircraftid aircraftid, a.airportid airportid,  \n\
+                      a.starttime outtime, 'OS' as type  \n\
+                      from ownersigning a where a.starttime >= '${windowStart}' and  \n\
+                      str_to_date(a.starttime, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') + interval 12 hour  \n\
+                      union all \n\
+                      select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid,  \n\
+                      mlg.schedout outtime, 'DM' as type  \n\
+                      from (select demandid, aircraftid, schedin, schedout, schedoutaptid, schedinaptid  \n\
+                      			from managedleg union all  \n\
+      	                    select demandid, aircraftid,  \n\
+                            IFNULL(actualin, scheduledin) schedin,  \n\
+                            IFNULL(actualout,scheduledout) schedout,  \n\
+                            departureairportid schedoutaptid,  \n\
+                            arrivalairportid schedinaptid from logpageleg) mlg  \n\
+                      where mlg.schedout >= '${windowStart}' and  \n\
+                      str_to_date(mlg.schedout, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') + interval 12 hour and  \n\
+                      demandid is not null \n\
+                  ) xb  \n\
+                  on xa.aircraftid = xb.aircraftid and xa.DHInAptID = xb.airportid  \n\
+                  and xa.intime < xb.outtime \n\
+                  group by xa.aircraftid, xa.DHInAptID, xa.outtime, xa.intime \n\
+             ) xxa,  \n\
+            (         select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid,  \n\
+                      mlg.schedout outtime, 'DM' as type  \n\
+                      from (select demandid, aircraftid, schedin, schedout,  \n\
+                      			schedoutaptid, schedinaptid from managedleg  \n\
+                      union all  \n\
+      	              select demandid, aircraftid,  \n\
+                      IFNULL(actualin, scheduledin) schedin, IFNULL(actualout,scheduledout) schedout,  \n\
+                      departureairportid schedoutaptid,  \n\
+                      arrivalairportid schedinaptid from logpageleg) mlg \n\
+                      where mlg.schedout >= '${windowEnd}'  and  \n\
+                      str_to_date(mlg.schedout, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') + interval 12 hour and  \n\
+                      demandid is not null \n\
+             ) xxb  \n\
+      where xxa.aircraftid = xxb.aircraftid and xxa.DHInAptID = xxb.airportid  \n\
+      and xxa.nextouttime = xxb.outtime) ss, \n\
+      aircrafttype t, aircraft f  \n\
+      where ss.DHouttime >= '${windowStart}' and  \n\
+      ss.DHouttime < '${windowEnd}' and ss.aircraftid = f.aircraftid and  \n\
+      f.aircrafttypeid = t.aircrafttypeid  \n\
+      group by t.aircrafttypeid \n\
+) ssm \n\
+ON ss.aircrafttypeid = ssm.aircrafttypeid "
+
+statSchedSQL3 = "LEFT JOIN \n\
+(select t.aircrafttypeid, \n\
+          sum(CASE ss.type WHEN 'CITC' THEN ss.DHtime ELSE 0 END) DHhrsContingency, \n\
+          sum(CASE ss.type WHEN 'CITC' THEN 1 ELSE 0 END) countDH4Contingency \n\
+      from( \n\
+            select xxa.aircraftid aircraftid, xxa.DHouttime DHouttime,  \n\
+            time_to_sec(IFNULL(timediff(xxa.DHintime, xxa.DHouttime),0))/3600 DHtime,  \n\
+            xxb.type type from  \n\
+            (  \n\
+               select xa.aircraftid aircraftid, xa.DHInAptID DHInAptID, xa.outtime DHouttime,  \n\
+               xa.intime DHintime, min(xb.outtime) nextouttime from  \n\
+                  ( \n\
+                      select a.aircraftid aircraftid, detail.schedinaptid DHInAptID,  \n\
+                      detail.schedout outtime, detail.schedin intime  \n\
+                      from \n\
+                      ( \n\
+                        select mlg.aircraftid, max(mlg.schedout) outtime \n\
+                        from (select demandid, aircraftid, schedin, schedout,  \n\
+                              schedoutaptid, schedinaptid from managedleg  \n\
+                              where schedout >= '${windowStart}' and schedin < '${windowEnd}' \n\
+                              and demandid is null  \n\
+                              union all  \n\
+                              select demandid, aircraftid,  \n\
+                              IFNULL(actualin, scheduledin) schedin,  \n\
+                              IFNULL(actualout,scheduledout) schedout,  \n\
+                              departureairportid schedoutaptid,   \n\
+                              arrivalairportid schedinaptid from logpageleg \n\
+                              where IFNULL(actualout,scheduledout) >= '${windowStart}'  \n\
+                              and IFNULL(actualin, scheduledin) < '${windowEnd}'  \n\
+                              and demandid is null  \n\
+                        ) mlg \n\
+                        group by mlg.aircraftid \n\
+                      ) a, \n\
+                      ( \n\
+                        select demandid, aircraftid, schedin, schedout, schedoutaptid, schedinaptid  \n\
+                        from managedleg  \n\
+                        where schedout >= '${windowStart}' and schedin < '${windowEnd}'  \n\
+                        and demandid is null  \n\
+                        union all  \n\
+                        select demandid, aircraftid,  \n\
+                        IFNULL(actualin, scheduledin) schedin, IFNULL(actualout,scheduledout) schedout,  \n\
+                        departureairportid schedoutaptid,   \n\
+                        arrivalairportid schedinaptid from logpageleg \n\
+                        where IFNULL(actualout,scheduledout) >= '${windowStart}'  \n\
+                        and IFNULL(actualin, scheduledin) < '${windowEnd}'  \n\
+                        and demandid is null  \n\
+                      ) detail \n\
+                      where a.aircraftid = detail.aircraftid and a.outtime = detail.schedout \n\
+                  ) xa left outer join  \n\
+                  (  \n\
+                      select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid,  \n\
+                      mlg.schedout outtime, 'CITC' as type  \n\
+                      from (select demandid, aircraftid, schedin, schedout, schedoutaptid, schedinaptid  \n\
+                            from managedleg union all  \n\
+                            select demandid, aircraftid,  \n\
+                            IFNULL(actualin, scheduledin) schedin,  \n\
+                            IFNULL(actualout,scheduledout) schedout,  \n\
+                            departureairportid schedoutaptid,  \n\
+                            arrivalairportid schedinaptid from logpageleg) mlg, demand d \n\
+                      where mlg.schedout >= '${windowStart}' and  \n\
+                      str_to_date(mlg.schedout, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') and \n\
+                      mlg.demandid is not null and mlg.demandid = d.demandid and (d.ownerid in (87359)) \n\
+                  ) xb  \n\
+                  on xa.aircraftid = xb.aircraftid and xa.DHInAptID = xb.airportid  \n\
+                  and xa.intime < xb.outtime \n\
+                  group by xa.aircraftid, xa.DHInAptID, xa.outtime, xa.intime \n\
+             ) xxa,  \n\
+            (         select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid,  \n\
+                      mlg.schedout outtime, 'CITC' as type  \n\
+                      from (select demandid, aircraftid, schedin, schedout,  \n\
+                            schedoutaptid, schedinaptid from managedleg  \n\
+                      union all  \n\
+                      select demandid, aircraftid,  \n\
+                      IFNULL(actualin, scheduledin) schedin, IFNULL(actualout,scheduledout) schedout,  \n\
+                      departureairportid schedoutaptid,  \n\
+                      arrivalairportid schedinaptid from logpageleg) mlg, demand d \n\
+                      where mlg.schedout >= '${windowStart}'  and  \n\
+                      str_to_date(mlg.schedout, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') and \n\
+                      mlg.demandid is not null and mlg.demandid = d.demandid and (d.ownerid in (87359)) \n\
+             ) xxb  \n\
+      where xxa.aircraftid = xxb.aircraftid and xxa.DHInAptID = xxb.airportid \n\
+      and xxa.nextouttime = xxb.outtime) ss, \n\
+      aircrafttype t, aircraft f \n\
+      where ss.DHouttime >= '${windowStart}' and \n\
+      ss.DHouttime < '${windowEnd}' and ss.aircraftid = f.aircraftid and \n\
+      f.aircrafttypeid = t.aircrafttypeid  \n\
+      group by t.aircrafttypeid \n\
+) ssn \n\
+ON ss.aircrafttypeid = ssn.aircrafttypeid \n\
+LEFT JOIN \n\
+( select a.aircrafttypeid, sum(a.increv) increv from \n\
+(select at.aircrafttypeid, ir.demandid, \n\
+  (CASE at.aircrafttypeid when 5 then ir.bravo else \n\
+    (CASE at.aircrafttypeid when 11 then ir.excel else \n\
+      (CASE at.aircrafttypeid when 54 then ir.cj3 else \n\
+        (CASE at.aircrafttypeid when 52 then ir.sovereign else 0 END) END) END) END) increv \n\
+from (    select demandid, aircraftid from managedleg where demandid is not null and \n\
+					schedout >= '${windowStart}' and schedin < '${windowEnd}' union all \n\
+					select demandid, aircraftid from logpageleg where demandid is not null and \n\
+					IFNULL(actualout,scheduledout) >= '${windowStart}' and IFNULL(actualin, scheduledin) < '${windowEnd}') m, \n\
+optimizer_increvenue ir, aircraft at \n\
+where m.demandid=ir.demandid and ir.scenarioid= %d and m.aircraftid=at.aircraftid) a \n\
+group by a.aircrafttypeid) sso \n\
+ON ss.aircrafttypeid = sso.aircrafttypeid"
+
+macStatSQL = "insert into optimizer_statistics \n\
+    select now() rundate,\n\
+    '${windowStart}' pwstart,\n\
+    '%s-MAC' username,\n\
+    %d scenarioid,\n\
+    ss.aircrafttypeid aircrafttypeid,\n\
+    IFNULL(ssc.countMac,0) coveredLegs,\n\
+    IFNULL(ssb.SchedMacOwnerLTHrs,0) liveTime,\n\
+    IFNULL(ssb.SchedMacOwnerLTCount,0) countLiveTimeLegs,\n\
+    IFNULL(ssa.SchedMacOwnerDHHrs,0) deadHead,\n\
+    IFNULL(ssa.SchedMacOwnerDHCount,0) countDeadHeadLegs,\n\
+    IFNULL(ssb.SchedCSMacLTHrs,0) charterHours,\n\
+    IFNULL(ssb.SchedCSMacLTCount,0) countCharters,\n\
+    IFNULL(ssa.SchedCSMacDHHrs,0) DHhrsForDemand,\n\
+    IFNULL(ssa.SchedCSMacDHCount,0) countDH4Demand,\n\
+    IFNULL(ssd.OptMacOwnerLTHrs,0) DHhrsForMX,\n\
+    IFNULL(ssd.OptMacOwnerLTCount,0) countDH4MX,\n\
+    IFNULL(sse.OptMacOwnerDHHrs,0) DHhrsForOS,\n\
+    IFNULL(sse.OptMacOwnerDHCount,0) countDH4OS,\n\
+    IFNULL(ssd.OptCSMacLTHrs,0) DHhrsForOther,\n\
+    IFNULL(ssd.OptCSMacLTCount,0) countDH4Other,\n\
+    IFNULL(sse.OptCSMacDHCount,0) ADDLCOUNT,\n\
+    IFNULL(sse.OptCSMacDHHrs,0) ADDLHRS\n\
+from\n\
+( select t.aircrafttypeid aircrafttypeid from aircrafttype t where t.aircrafttypeid in (5,6,11,52,54)) ss \n\
+LEFT JOIN\n\
+(\n\
+select  t.aircrafttypeid, \n\
+          sum(CASE ss.type WHEN 'OWNER-MAC' THEN ss.DHtime ELSE 0 END) SchedMacOwnerDHHrs, \n\
+          sum(CASE ss.type WHEN 'OWNER-MAC' THEN 1 ELSE 0 END) SchedMacOwnerDHCount, \n\
+          sum(CASE ss.type WHEN 'NON-OWNER' THEN ss.DHtime ELSE 0 END) SchedCSMacDHHrs, \n\
+          sum(CASE ss.type WHEN 'NON-OWNER' THEN 1 ELSE 0 END) SchedCSMacDHCount \n\
+      from( \n\
+            select xxa.aircraftid aircraftid, xxa.DHouttime DHouttime, \n\
+            time_to_sec(IFNULL(timediff(xxa.DHintime, xxa.DHouttime),0))/3600 DHtime, \n\
+            xxb.type type from \n\
+            ( \n\
+               select xa.aircraftid aircraftid, xa.schedinaptid DHInAptID, xa.schedout DHouttime, \n\
+               xa.schedin DHintime, min(xb.outtime) nextouttime from \n\
+                  ( \n\
+                              select aircraftid, schedin, schedout, \n\
+                        			schedoutaptid, schedinaptid from managedleg \n\
+                              where schedout >= '${windowStart}' and schedin < '${windowEnd}' \n\
+                              and demandid is null  and aircraftid in (select distinct aircraftid from maircraftinfo) \n\
+                              union all \n\
+                              select aircraftid, \n\
+                              IFNULL(actualin, scheduledin) schedin, \n\
+                              IFNULL(actualout,scheduledout) schedout, \n\
+                              departureairportid schedoutaptid, \n\
+                              arrivalairportid schedinaptid from logpageleg \n\
+                              where IFNULL(actualout,scheduledout) >= '${windowStart}' \n\
+                              and IFNULL(actualin, scheduledin) < '${windowEnd}' \n\
+                              and demandid is null  and aircraftid in (select distinct aircraftid from maircraftinfo) \n\
+                  ) xa left outer join \n\
+                  ( \n\
+                      select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid, \n\
+                      mlg.schedout outtime, IF (mlg.contractid in (select contractid from maircraftinfo), 'OWNER-MAC', 'NON-OWNER') as type \n\
+                      from (select m.demandid, m.aircraftid, m.schedin, m.schedout, \n\
+                      			m.schedoutaptid, m.schedinaptid, d.contractid from managedleg m, demand d \n\
+                      			where m.demandid = d.demandid and m.aircraftid in (select distinct aircraftid from maircraftinfo) \n\
+                      			and d.ownerid not in (87359) \n\
+                      union all \n\
+      	              select l.demandid, l.aircraftid, \n\
+                      IFNULL(l.actualin, l.scheduledin) schedin, IFNULL(l.actualout,l.scheduledout) schedout, \n\
+                      l.departureairportid schedoutaptid, \n\
+                      l.arrivalairportid schedinaptid, d.contractid contractid \n\
+                      from logpageleg l, demand d where l.demandid = d.demandid and \n\
+                      l.aircraftid in (select distinct aircraftid from maircraftinfo) and d.ownerid not in (87359) ) mlg, demand d \n\
+                      where mlg.schedout >= '${windowStart}' and \n\
+                      str_to_date(mlg.schedout, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') and \n\
+                      mlg.demandid is not null and mlg.demandid = d.demandid \n\
+                  ) xb \n\
+                  on xa.aircraftid = xb.aircraftid and xa.schedinaptid = xb.airportid \n\
+                  and xa.schedin < xb.outtime \n\
+                  group by xa.aircraftid, xa.schedinaptid, xa.schedout, xa.schedin \n\
+             ) xxa, \n\
+            (         select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid, \n\
+                      mlg.schedout outtime, IF (mlg.contractid in (select contractid from maircraftinfo), 'OWNER-MAC', 'NON-OWNER') as type \n\
+                      from (select m.demandid, m.aircraftid, m.schedin, m.schedout, \n\
+                      			m.schedoutaptid, m.schedinaptid, d.contractid from managedleg m, demand d \n\
+                      			where m.demandid = d.demandid and \n\
+                      			m.aircraftid in (select distinct aircraftid from maircraftinfo) and d.ownerid not in (87359) \n\
+                      union all \n\
+      	              select l.demandid, l.aircraftid, \n\
+                      IFNULL(l.actualin, l.scheduledin) schedin, IFNULL(l.actualout,l.scheduledout) schedout, \n\
+                      l.departureairportid schedoutaptid, \n\
+                      l.arrivalairportid schedinaptid, d.contractid contractid \n\
+                      from logpageleg l, demand d where l.demandid = d.demandid and \n\
+                      l.aircraftid in (select distinct aircraftid from maircraftinfo) and d.ownerid not in (87359) ) mlg, demand d \n\
+                      where mlg.schedout >= '${windowStart}' and \n\
+                      str_to_date(mlg.schedout, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') and \n\
+                      mlg.demandid is not null and mlg.demandid = d.demandid \n\
+             ) xxb \n\
+      where xxa.aircraftid = xxb.aircraftid and xxa.DHInAptID = xxb.airportid \n\
+      and xxa.nextouttime = xxb.outtime) ss, \n\
+      aircrafttype t, aircraft f \n\
+      where ss.DHouttime >= '${windowStart}' and \n\
+      ss.DHouttime < '${windowEnd}' and ss.aircraftid = f.aircraftid and \n\
+      f.aircrafttypeid = t.aircrafttypeid \n\
+      group by t.aircrafttypeid \n\
+) ssa \n\
+ON ss.aircrafttypeid = ssa.aircrafttypeid "
+
+macStatSQL2 = "LEFT JOIN \n\
+(\n\
+      select  ss.aircrafttypeid, \n\
+          sum(CASE ss.type WHEN 'OWNER-MAC' THEN ss.livetime ELSE 0 END) SchedMacOwnerLTHrs, \n\
+          sum(CASE ss.type WHEN 'OWNER-MAC' THEN 1 ELSE 0 END) SchedMacOwnerLTCount, \n\
+          sum(CASE ss.type WHEN 'NON-OWNER' THEN ss.livetime ELSE 0 END) SchedCSMacLTHrs, \n\
+          sum(CASE ss.type WHEN 'NON-OWNER' THEN 1 ELSE 0 END) SchedCSMacLTCount \n\
+      from(\n\
+                      select  t.aircrafttypeid aircrafttypeid, \n\
+                      IF (mlg.contractid in (select contractid from maircraftinfo), 'OWNER-MAC', 'NON-OWNER') as type, \n\
+                      time_to_sec(IFNULL(timediff(mlg.schedin, mlg.schedout),0))/3600 livetime \n\
+                      from (\n\
+                      select m.demandid, m.aircraftid, m.schedin, m.schedout, \n\
+                      m.schedoutaptid, m.schedinaptid, d.contractid \n\
+                      from managedleg m, demand d where m.demandid = d.demandid and \n\
+                      m.aircraftid in (select distinct aircraftid from maircraftinfo) and d.ownerid not in (87359) \n\
+                      union all \n\
+      	              select l.demandid, l.aircraftid, \n\
+                      IFNULL(l.actualin, l.scheduledin) schedin, IFNULL(l.actualout,l.scheduledout) schedout, \n\
+                      l.departureairportid schedoutaptid, \n\
+                      l.arrivalairportid schedinaptid, d.contractid contractid \n\
+                      from logpageleg l, demand d where l.demandid = d.demandid and \n\
+                      l.aircraftid in (select distinct aircraftid from maircraftinfo) and d.ownerid not in (87359) \n\
+                      ) mlg, demand d, aircrafttype t, aircraft f \n\
+                      where mlg.schedout >= '${windowStart}' and \n\
+                      str_to_date(mlg.schedout, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') and \n\
+                      mlg.demandid is not null and mlg.demandid = d.demandid and \n\
+                      mlg.aircraftid = f.aircraftid and f.aircrafttypeid = t.aircrafttypeid \n\
+      ) ss \n\
+      group by ss.aircrafttypeid \n\
+) ssb \n\
+ON ss.aircrafttypeid = ssb.aircrafttypeid \n\
+LEFT JOIN \n\
+(\n\
+		select t.aircrafttypeid aircrafttypeid, count(mlg.demandid) countMac \n\
+    from (\n\
+    	select m.demandid, m.aircraftid, m.schedout \n\
+      from managedleg m, demand d where m.demandid = d.demandid and d.contractid in (select contractid from maircraftinfo) \n\
+      and d.ownerid not in (87359) \n\
+      union all \n\
+      select l.demandid, l.aircraftid, IFNULL(l.actualout,l.scheduledout) schedout \n\
+      from logpageleg l, demand d where l.demandid = d.demandid and d.contractid in (select contractid from maircraftinfo) \n\
+      and d.ownerid not in (87359) \n\
+   	) mlg, demand d, aircrafttype t, aircraft f \n\
+    where mlg.schedout >= '${windowStart}' and \n\
+    str_to_date(mlg.schedout, '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') < str_to_date('${windowEnd}', '%%%%Y/%%%%m/%%%%d %%%%H:%%%%i') and \n\
+    mlg.demandid is not null and mlg.demandid = d.demandid and mlg.aircraftid = f.aircraftid and f.aircrafttypeid = t.aircrafttypeid \n\
+    group by t.aircrafttypeid \n\
+) ssc \n\
+ON ss.aircrafttypeid = ssc.aircrafttypeid \n\
+LEFT JOIN \n\
+(      select  ss.aircrafttypeid, \n\
+          sum(CASE ss.type WHEN 'OWNER-MAC' THEN ss.livetime ELSE 0 END) OptMacOwnerLTHrs, \n\
+          sum(CASE ss.type WHEN 'OWNER-MAC' THEN 1 ELSE 0 END) OptMacOwnerLTCount, \n\
+          sum(CASE ss.type WHEN 'NON-OWNER' THEN ss.livetime ELSE 0 END) OptCSMacLTHrs, \n\
+          sum(CASE ss.type WHEN 'NON-OWNER' THEN 1 ELSE 0 END) OptCSMacLTCount \n\
+      from( select  t.aircrafttypeid aircrafttypeid, \n\
+                      IF (mlg.contractid in (select contractid from maircraftinfo), 'OWNER-MAC', 'NON-OWNER') as type, \n\
+                      time_to_sec(IFNULL(timediff(mlg.schedin, mlg.schedout),0))/3600 livetime \n\
+                      from (\n\
+                      select m.demandid, m.aircraftid, m.schedin, m.schedout, \n\
+                      			m.schedoutaptid, m.schedinaptid, d.contractid from proposed_managedleg m, demand d \n\
+                      where m.demandid = d.demandid and m.aircraftid \n\
+                      in (select distinct aircraftid from maircraftinfo) and d.ownerid not in (87359) \n\
+                      and m.scenarioid = %d) mlg, demand d, aircrafttype t, aircraft f \n\
+                      where mlg.demandid is not null and mlg.demandid = d.demandid and \n\
+											d.outtime >= '${windowStart}' and d.outtime < '${windowEnd}' and \n\
+                      mlg.aircraftid = f.aircraftid and f.aircrafttypeid = t.aircrafttypeid \n\
+      ) ss \n\
+      group by ss.aircrafttypeid \n\
+) ssd \n\
+ON ss.aircrafttypeid = ssd.aircrafttypeid \n\
+LEFT JOIN \n\
+(\n\
+select  t.aircrafttypeid, \n\
+          sum(CASE ss.type WHEN 'OWNER-MAC' THEN ss.DHtime ELSE 0 END) OptMacOwnerDHHrs, \n\
+          sum(CASE ss.type WHEN 'OWNER-MAC' THEN 1 ELSE 0 END) OptMacOwnerDHCount, \n\
+          sum(CASE ss.type WHEN 'NON-OWNER' THEN ss.DHtime ELSE 0 END) OptCSMacDHHrs, \n\
+          sum(CASE ss.type WHEN 'NON-OWNER' THEN 1 ELSE 0 END) OptCSMacDHCount \n\
+      from( \n\
+            select xxa.aircraftid aircraftid, xxa.DHouttime DHouttime, \n\
+            time_to_sec(IFNULL(timediff(xxa.DHintime, xxa.DHouttime),0))/3600 DHtime, \n\
+            xxb.type type from \n\
+            ( \n\
+               select xa.aircraftid aircraftid, xa.schedinaptid DHInAptID, xa.schedout DHouttime, \n\
+               xa.schedin DHintime, min(xb.outtime) nextouttime from \n\
+                  ( select aircraftid, schedin, schedout, \n\
+                        	   schedoutaptid, schedinaptid from proposed_managedleg \n\
+                              where scenarioid = %d and demandid is null and \n\
+                              aircraftid in (select distinct aircraftid from maircraftinfo) \n\
+                  ) xa left outer join \n\
+                  ( \n\
+                      select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid, \n\
+                      mlg.schedout outtime, IF (mlg.contractid in \n\
+                      (select contractid from maircraftinfo), 'OWNER-MAC', 'NON-OWNER') as type \n\
+                      from (select m.demandid, m.aircraftid, m.schedin, m.schedout, \n\
+                      			m.schedoutaptid, m.schedinaptid, d.contractid from proposed_managedleg m, demand d \n\
+                      			where m.scenarioid = %d and m.demandid = d.demandid and \n\
+														d.outtime >= '${windowStart}' and d.outtime < '${windowEnd}' and \n\
+                      			m.aircraftid in (select distinct aircraftid from maircraftinfo) \n\
+                      			and d.ownerid not in (87359) \n\
+                      ) mlg \n\
+                  ) xb \n\
+                  on xa.aircraftid = xb.aircraftid and xa.schedinaptid = xb.airportid \n\
+                  and xa.schedin < xb.outtime \n\
+                  group by xa.aircraftid, xa.schedinaptid, xa.schedout, xa.schedin \n\
+             ) xxa, \n\
+            (         select  mlg.aircraftid aircraftid, mlg.schedoutaptid airportid, \n\
+                      mlg.schedout outtime, IF (mlg.contractid in \n\
+                      (select contractid from maircraftinfo), 'OWNER-MAC', 'NON-OWNER') as type \n\
+                      from (select m.demandid, m.aircraftid, m.schedin, m.schedout, \n\
+                      			m.schedoutaptid, m.schedinaptid, d.contractid from proposed_managedleg m, demand d \n\
+                      			where m.scenarioid = %d and m.demandid = d.demandid and \n\
+											d.outtime >= '${windowStart}' and d.outtime < '${windowEnd}' and \n\
+											m.aircraftid in (select distinct aircraftid from maircraftinfo) \n\
+                      			and d.ownerid not in (87359)) mlg \n\
+             ) xxb \n\
+      where xxa.aircraftid = xxb.aircraftid and xxa.DHInAptID = xxb.airportid \n\
+      and xxa.nextouttime = xxb.outtime) ss, \n\
+      aircrafttype t, aircraft f \n\
+      where ss.aircraftid = f.aircraftid and \n\
+      f.aircrafttypeid = t.aircrafttypeid \n\
+      group by t.aircrafttypeid \n\
+) sse \n\
+ON ss.aircrafttypeid = sse.aircrafttypeid"

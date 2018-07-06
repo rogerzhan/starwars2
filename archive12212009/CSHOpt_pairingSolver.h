@@ -1,0 +1,1 @@
+int getOptimalMatching (MatchingArc *, int, int *);

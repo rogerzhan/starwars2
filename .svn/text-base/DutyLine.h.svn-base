@@ -1,0 +1,2 @@
+
+int dutyLine(ProposedCrewAssg **crewAssignP, int *numCrewAssignP, BINTREENODE **travelsRootP, int *numTravelsP );

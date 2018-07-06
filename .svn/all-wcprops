@@ -1,0 +1,173 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/repos/!svn/ver/31025/trunk/optimizer/cmdWin/CSHOpt_mainDir
+END
+CSHOpt_dutyNodes.c
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/repos/!svn/ver/31009/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_dutyNodes.c
+END
+CSHOpt_tours.h
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repos/!svn/ver/28911/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_tours.h
+END
+DutyLine.h
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/repos/!svn/ver/29723/trunk/optimizer/cmdWin/CSHOpt_mainDir/DutyLine.h
+END
+cjoin.c
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/repos/!svn/ver/27074/trunk/optimizer/cmdWin/CSHOpt_mainDir/cjoin.c
+END
+CSHOpt_dutyNodes.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/repos/!svn/ver/29745/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_dutyNodes.h
+END
+CSHOpt_main.c
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/repos/!svn/ver/31009/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_main.c
+END
+CSHOpt_pairingSolver.c
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/repos/!svn/ver/24141/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_pairingSolver.c
+END
+CSHOpt_scheduleSolver.c
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/repos/!svn/ver/31025/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_scheduleSolver.c
+END
+sendParentMessage.c
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/repos/!svn/ver/28572/trunk/optimizer/cmdWin/CSHOpt_mainDir/sendParentMessage.c
+END
+memory.c
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/repos/!svn/ver/28572/trunk/optimizer/cmdWin/CSHOpt_mainDir/memory.c
+END
+CSHOpt_arcs.c
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/repos/!svn/ver/31009/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_arcs.c
+END
+CSHOpt_struct.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/repos/!svn/ver/30621/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_struct.h
+END
+CSHOpt_calculateODandOAG.c
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/!svn/ver/28572/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_calculateODandOAG.c
+END
+CSHOpt_scheduleSolver.h
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/repos/!svn/ver/29723/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_scheduleSolver.h
+END
+check.c
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/repos/!svn/ver/28799/trunk/optimizer/cmdWin/CSHOpt_mainDir/check.c
+END
+CSHOpt_processInput.c
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/repos/!svn/ver/30621/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_processInput.c
+END
+CSHOpt_input.c
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repos/!svn/ver/30888/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_input.c
+END
+CSHOpt_define.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/repos/!svn/ver/30420/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_define.h
+END
+CSHOpt_pairCrews.c
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/repos/!svn/ver/30626/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_pairCrews.c
+END
+CSHOpt_readInput.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/repos/!svn/ver/30420/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_readInput.h
+END
+CSHOpt_output.c
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/repos/!svn/ver/30330/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_output.c
+END
+CSHOpt_callOag.c
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/repos/!svn/ver/29634/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_callOag.c
+END
+CSHOpt_processInput.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/repos/!svn/ver/28572/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_processInput.h
+END
+CSHOpt_pairCrews.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/repos/!svn/ver/30018/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_pairCrews.h
+END
+CSHOpt_output.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/repos/!svn/ver/28572/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_output.h
+END
+CSHOpt_buildOagOD.c
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/repos/!svn/ver/26779/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_buildOagOD.c
+END
+CSHOpt_tours.c
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repos/!svn/ver/30621/trunk/optimizer/cmdWin/CSHOpt_mainDir/CSHOpt_tours.c
+END
+DutyLine.c
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/repos/!svn/ver/30486/trunk/optimizer/cmdWin/CSHOpt_mainDir/DutyLine.c
+END
