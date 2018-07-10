@@ -187,7 +187,7 @@ typedef struct ss_crew_data {
     int lempid;
     int lempinfoid;
     int lpostid;
-	int qualification; //AD20171016
+	char *qualification; //Ali (6/12/2018)
     char *zpostdesc; // Unrestricted, Restricted, Check Airman, Standards Captain, etc
     char *zshiftdesc; // PIC or SIC
     char *zacccodeid; // AOT, OT, DO, DOU

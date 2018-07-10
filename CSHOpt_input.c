@@ -2301,6 +2301,17 @@ static int readOptParams(void)
 			fprintf(logFile,"%27s = %8.2f\n", scratch, optParam.pairSameBaseBonus[x]);
 		}
 	}
+
+	/* required: "KAtoCXThreshold" - 05/24/2018 Added by Ali */
+	if(!(paramVal = getCmdLineVar("KAtoCXThreshold"))) {
+	  if(!(paramVal = getParamValue("KAtoCXThreshold"))) {
+		logMsg(logFile,"Required parameter \"KAtoCXThreshold\" missing from parameter file.\n");
+		writeWarningData(myconn); exit(1);
+	  }
+	}
+	optParam.KAtoCXThreshold = atoi(paramVal);
+	if(verbose) fprintf(logFile,"%27s = %5d\n", "KAtoCXThreshold", optParam.KAtoCXThreshold);
+
 	//END - 08/05/09 ANG
 
 	//fei FA
@@ -2466,13 +2477,14 @@ static int readACTypeList(void)
 
 	//Different pre_flight for each acType - 07/17/2017 ANG
 	for(x = 0; x < wc; x++) {
-		strcpy(vbuf, wptrs[x]);
-		strcat(vbuf, "_pre_flight");
-		if(!(paramVal = getParamValue(vbuf))) {
-			logMsg(logFile,"Required parameter \"%s\" missing from parameter file.\n", vbuf);
-			writeWarningData(myconn); exit(1);
-		}
-		acTypeList[x].preFlightTm = atof(paramVal);
+//		strcpy(vbuf, wptrs[x]);
+//		strcat(vbuf, "_pre_flight");
+//		if(!(paramVal = getParamValue(vbuf))) {
+//			logMsg(logFile,"Required parameter \"%s\" missing from parameter file.\n", vbuf);
+//			writeWarningData(myconn); exit(1);
+//		}
+//		acTypeList[x].preFlightTm = atof(paramVal);
+		acTypeList[x].preFlightTm = 60; //The same pre_flight is reconsidered for all acTypes. Added by Ali (6/29/2018).
 	}
 
 	/* required: recovery option */
@@ -2518,7 +2530,7 @@ static int readACTypeList(void)
 		fprintf(logFile,"| AC TYPE | AC TYPE ID | SEQ POS | CHRTR COST | OPER COST | MAC COST  | TAXI COST |    STD REV | MAXUPGRADE | CAPACITY | UPRCVRY | DOWNRCVRY | PREFLIGHTTM |\n");
 		fprintf(logFile,"+---------+------------+---------+------------+-----------+-----------+-----------+------------+------------+----------+---------+-----------+-------------+\n");
 		for(x = 0; x < wc; x++) {
-			fprintf(logFile,"| %7s | %10d | %7d | %10.2f | %9.2f | %9.2f | %9.2f | %10.2f | %10d | %8d | %7d | %9d | %11.2f |\n",
+			fprintf(logFile,"| %7s | %10d | %7d | %10.2f | %9.2f | %9.2f | %9.2f | %10.2f | %10d | %8d | %7d | %9d | %11d |\n",
 				wptrs[x], acTypeList[x].aircraftTypeID, acTypeList[x].sequencePosn,
 				acTypeList[x].charterCost, acTypeList[x].operatingCost, acTypeList[x].macOprCost,
 				acTypeList[x].taxiCost, acTypeList[x].standardRevenue, acTypeList[x].maxUpgrades, acTypeList[x].capacity, acTypeList[x].upgradeRecovery, acTypeList[x].downgradeRecovery, acTypeList[x].preFlightTm); 
@@ -5830,7 +5842,6 @@ readCrewList(MY_CONNECTION *myconn)
 		if(strcasecmp(curcrew, ssCdPtr->zbadgeid) != 0) {
 			strcpy(curcrew, ssCdPtr->zbadgeid);
 			preCrewPtr->employeenumber = _strdup(ssCdPtr->zbadgeid);
-			preCrewPtr->qualification = ssCdPtr->qualification; //AD20171018
 			cdidBuf.employeenumber = curcrew;
 			tmp1 = TreeSearch(empnbrRoot, &cdidBuf, empnbrCmp);
 			if(tmp1) {
@@ -5866,6 +5877,11 @@ readCrewList(MY_CONNECTION *myconn)
 			}
 			if(! tmp)
 				preCrewPtr->crewID = fakeCrewID++;
+			preCrewPtr++;
+		}
+		else{//Ali (6/12/2018)
+			preCrewPtr--;
+			preCrewPtr->qualification = atoi(ssCdPtr->qualification); 
 			preCrewPtr++;
 		}
 	}
@@ -6671,7 +6687,7 @@ readCrewList(MY_CONNECTION *myconn)
 		cPtr->crewID = preCrewPtr->crewID;
 		cPtr->position = preCrewPtr->position;
 		cPtr->aircraftTypeID = preCrewPtr->aircraftTypeID;
-		
+	
 		cPtr->qualification = preCrewPtr->qualification; //AD20171018
 
 		cPtr->nextAcID = preCrewPtr->nextAcID; //CPAC Exception - 12/18/2009 ANG
@@ -8427,7 +8443,7 @@ textToSS_CrewData(MYSQL_ROW row)
 	//	logMsg(logFile,"%s Line %d, null qualification in textToSS_CrewData().\n",__FILE__,__LINE__);
 	//	writeWarningData(myconn); exit(1);
 	//}
-	ssCdPtr->qualification = atoi(row[SS_qualification]);
+    ssCdPtr->qualification = _strdup(row[SS_qualification]); //Ali (6/12/2018)
 
 	if(!(ssCdPtr->zpostdesc = _strdup(row[SS_zpostdesc]))) {
 		logMsg(logFile,"%s Line %d, Out of Memory in textToSS_CrewData().\n",__FILE__,__LINE__);
@@ -8523,7 +8539,7 @@ crewDataToSS_CrewData(SS_CrewData *ssCdPtr0, CrewData *cdPtr)
 	ssCdPtr->lempid = 0;
 	ssCdPtr->lempinfoid = 0;
 	ssCdPtr->lpostid = 0;
-	ssCdPtr->qualification = 0; //AD20171016
+	ssCdPtr->qualification = ""; //Ali (6/12/2018)
 	//ssCdPtr->zpostdesc = "Rec not in SS";
 	ssCdPtr->zpostdesc = "Unrestricted";
 	if(cdPtr->position == 1)
@@ -11509,8 +11525,9 @@ readSsCrewData(MY_CONNECTION *myconn)
 		}AD2017*/
 
 		//logMsg(logFile, "Check Point 4.3, rows = %d \n", rows);
-
+		
 		ss_crwPtr = textToSS_CrewData(row);
+
 		if(! ss_crwPtr) {
 			logMsg(logFile,"%s Line %d, Out of Memory in readSsCrewData().\n", __FILE__,__LINE__);
 			writeWarningData(myconn); exit(1);
@@ -13252,7 +13269,7 @@ getPostFromPostID(int lpostid)
 */
 static int
 getCategoryID(Post post, int position)
-{
+{	
 	switch(post) {
 	case Post_Check_Airman:
 		return(Post_Check_Airman);
@@ -17170,7 +17187,7 @@ printMaintListNew(void)
 
 typedef enum {
 	//dmdnumCJ1,dmdnumBRV, dmdnumCJ3, dmdnumEXL, dmdnumSOV=4
-	dmdnumCJ1,dmdnumBRV, dmdnumCJ3, dmdnumCJ4, dmdnumEXL, dmdnumSOV, dmdnumCX=5 // CX - 12/04/2009 ANG - CJ4 - 12/23/11 ANG
+	dmdnumCJ1,dmdnumBRV, dmdnumCJ3, dmdnumCJ4, dmdnumEXL, dmdnumSOV, dmdnumCX=6 // CX - 12/04/2009 ANG - CJ4 - 12/23/11 ANG
 } dmdnumbyzoneSqlColumns;
 
 /****************************************************************************************************
@@ -17191,7 +17208,7 @@ static int readContingencyFkDemand(MY_CONNECTION *myconn)
 //	Demand *tPtr;
 //	DateTime dt;
 //	char *querystrbyarea;
-	int demandnumbyzone[MAX_WINDOW_DURATION][MAX_DAY_DIVISION][ZONE_NUM][ACTYPE_NUM];
+	int demandnumbyzone[MAX_WINDOW_DURATION][MAX_DAY_DIVISION][ZONE_NUM][ACTYPE_NUM+2];
 	int day,day_division,zoneid;
 	char *variables[128];
 	char timestartstr[64];
@@ -17215,7 +17232,7 @@ static int readContingencyFkDemand(MY_CONNECTION *myconn)
     pwstart = dt_time_tToDateTime(optParam.windowStart);
 	pwend = dt_time_tToDateTime(optParam.windowEnd);
 	//startFkDmdIdx = numDemandAllocd;
-     
+	
 	//contingency_prob[ACTYPE_NUM] = {0.045, 0.12, 0.10, 0.15, 0.17};
 	vc = getVars(demandnumbyzoneSQL, 128, variables);
 	totalday = 1;
@@ -17235,7 +17252,7 @@ static int readContingencyFkDemand(MY_CONNECTION *myconn)
     for(day = 0; day < MAX_WINDOW_DURATION; day++)
 	  for(day_division = 0; day_division < MAX_DAY_DIVISION; day_division++)
          for(zoneid = 1; zoneid <= ZONE_NUM; zoneid++)
-			for(type = 0; type < ACTYPE_NUM; type++)
+			for(type = 0; type < ACTYPE_NUM+2; type++)
                   demandnumbyzone[day][day_division][zoneid-1][type] = -1;
 
 	//tmp_timeend_day = pwend;
@@ -17316,7 +17333,7 @@ static int readContingencyFkDemand(MY_CONNECTION *myconn)
 				 demandnumbyzone[day][day_division][zoneid-1][dmdnumSOV] = atoi(row[dmdnumSOV]);
 				 demandnumbyzone[day][day_division][zoneid-1][dmdnumCX] = atoi(row[dmdnumCX]);// CX - 12/04/2009 ANG
 			   }
-			   logMsg(logFile,"Zone %d: %d %d %d %d %d %d\n",
+			   logMsg(logFile,"Zone %d: %d %d %d %d %d %d %d\n",
 				   zoneid,
 				   demandnumbyzone[day][day_division][zoneid-1][dmdnumCJ1],
 				   demandnumbyzone[day][day_division][zoneid-1][dmdnumBRV],
@@ -19839,18 +19856,10 @@ runFillMissingRepo(MY_CONNECTION *myconn)
 	//MYSQL_ROW row;
 	//my_ulonglong rowCount, rows;
 	//int a;
-	//RLZ 07/09/2018 run the procedure 2nd time if the first time failed.
+
 	if(!myDoQuery(myconn, runFillMissingRepoSQL, &res, &cols)) {
 		logMsg(logFile,"%s Line %d: db errno: %d: %s\n", __FILE__,__LINE__,myconn->my_errno, myconn->my_error_msg);
 		writeWarningData(myconn); //exit(1);
-
-		if(!myDoQuery(myconn, runFillMissingRepoSQL, &res, &cols)) {
-		logMsg(logFile,"%s Line %d: db errno: %d: %s\n", __FILE__,__LINE__,myconn->my_errno, myconn->my_error_msg);
-		writeWarningData(myconn); 
-		logMsg (logFile, "\n Procedure to fill in missing repo legs and missing crew assignments has been failed twice. \n");
-		exit(1);
-		}
-
 	}
 
 	logMsg (logFile, "\n Procedure to fill in missing repo legs and missing crew assignments has been run successfully. \n");

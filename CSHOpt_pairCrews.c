@@ -20,7 +20,6 @@
 
 /*
 	This struct is used to store potential crewswap locations.
-
 */
 typedef struct
 {
@@ -621,7 +620,7 @@ identifyImpossiblePairings (void)
 				crewPairMatrix [j][i] = -1;
 			}
 		}
-
+		
 		//AD20171018
 		//crew cannot be paired with crew from different qualification 
 		//  for excel(actypeid 50) : 0  
@@ -828,11 +827,7 @@ identifyImpossiblePairings (void)
 				crewPairMatrix[i][j] = -1;
 				crewPairMatrix[j][i] = -1;
 			}
-			else if (crewList[i].isDup != crewList[j].isDup) //XLS+ - 06/07/11 ANG
-			{ // Xls+ pilots (copies) can only be paired with Xls+ pilots, so are CJ4's
-				crewPairMatrix[i][j] = -1;
-				crewPairMatrix[j][i] = -1;
-			}
+			
 			else if (!isAllowablePairing (cati, catj))
 			{
 				/*

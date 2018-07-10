@@ -440,6 +440,7 @@ static int createCrewArcsToPlanes(void)
 {
 	int j, p, i, availDay, cp, pMax, acInd, avail, found;
 	int repoFltTm = 0, repoBlkTm = 0, repoElapsedTm = 0, repoStops = 0;
+	char *result;
 	CrewArc tempArc;
 	CrewArc *newCrewArc;
 	
@@ -688,6 +689,7 @@ static int createCrewArcsToPlanes(void)
 			continue;
 		if(crewList[crewPairList[cp].crewListInd[0]].availDT > crewPairList[cp].pairEndTm || crewList[crewPairList[cp].crewListInd[1]].availDT > crewPairList[cp].pairEndTm)
 			continue;
+		
 		//if crewPair is locked to plane AND (no other crew is locked to the plane before them OR we can take the plane at this point), 
 		//we generate plane arcs for crew with this one plane
 		if(crewPairList[cp].optAircraftID > 0)
@@ -787,6 +789,15 @@ static int createCrewArcsToPlanes(void)
 				} else if( crewList[crewPairList[cp].crewListInd[0]].isDup == 1 || crewList[crewPairList[cp].crewListInd[1]].isDup == 1 ) //not excel plus
 					continue ; //not generating arc
 			}
+
+			result = (char *)malloc(5);
+			strncpy(result, acList[acInd].registration + 1, 3);
+			//Two fusion pilots cannot be assigned to a King Air requiring proline pilots (Added by Ali-- 6/25/2018)
+			if (acList[acInd].aircraftTypeID == 5 && atoi(result) <= 856 && crewList[crewPairList[cp].crewListInd[0]].qualification == 2 && crewList[crewPairList[cp].crewListInd[1]].qualification == 2)
+				continue;
+			//Two proline pilots cannot be assigned to a King Air requiring fusion pilots (Added by Ali-- 6/25/2018) 
+			if (acList[acInd].aircraftTypeID == 5 && atoi(result) > 856 && crewList[crewPairList[cp].crewListInd[0]].qualification == 1 && crewList[crewPairList[cp].crewListInd[1]].qualification == 1)
+				continue;
 
 			//if plane is not available until after crewPair's end day, don't create arc
 			if(acList[acInd].availDay > crewPairList[cp].endDay)
@@ -917,6 +928,7 @@ static int createPlaneArcs(void)
 							endDuty->unreachableFlag[z]=1;
 						continue;  //continue without creating arc
 					}
+
 					//if crewPair is available this day (not earlier) and available time is fixed, then check that duty hours will not be exceeded
 					if(crewPairList[fixedCPInd].startDay == day){
 						//if availAptID is populated for crewPair, then they are already together and we need only check duty hours for pair
@@ -3354,7 +3366,7 @@ static int calculateArcsToFirstDuties(int cp, int j, CrewArc *crewArc, NetworkAr
 		}	
 		//END - FATIGUE - 02/05/10 ANG
 	}
-
+	
 	//AD20171019 - this check needs to be done for all scenarios
 	if(dutyEndTime - pickupTime + max(acTypeList[j].preFlightTm, max(crewList[crewPairList[cp].crewListInd[0]].dutyTime, crewList[crewPairList[cp].crewListInd[1]].dutyTime)) > optParam.maxDutyTm ){
 		return -1;
@@ -4307,6 +4319,7 @@ static int createDutyToDutyArcs(int acTypeListInd, int day1, int day2, Duty *sta
 	for(k2=dutyTally[j][day2][0].startInd; k2<=dutyTally[j][day2][8].endInd; k2++)
 	{
 		endDuty = &dutyList[j][k2];
+
 		//if start node is a "final repo" or "repo only" node, endDuty must start with the trip that we positioned to
 		if(startDuty->repoDemandInd > -1)
 		{	if(startDuty->repoDemandInd != endDuty->demandInd[0])

@@ -1,6 +1,0 @@
-// Function Declarations
-int createDutyNodes(void);
-int checkPlaneExclusions(Duty *duty, Aircraft *plane, int day);
-int getRepoArriveTm(int startAptID, int endAptID, int earlyDepTm, int elapsedTm);
-int getRepoDepartTm(int startAptID, int endAptID, int lateArrTm, int elapsedTm);
-int checkOcfTiming(time_t startTime, int startLoc, time_t endTime, int endLoc, int acTypeInd, int crewPickupTm, int *addTime); //OCF - 10/11/11 ANG

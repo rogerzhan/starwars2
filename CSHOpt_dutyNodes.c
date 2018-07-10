@@ -142,6 +142,8 @@ static int tabulateCrewStartAndEndDays(void)
 {
 	int cp, day, c, crewInd, windowEnd, i;
 
+//	optParam.planningWindowDuration = 2;
+	
 	windowEnd = optParam.planningWindowDuration - 1;
 
 	// Initialize potCrewStarts and potCrewEnds
@@ -528,6 +530,13 @@ static int createOneTripNodes(int day)
 
 			//no hard incl before i on current day
 
+//          ---------------------------------------------------------------------------------------------
+//          New Coding Block: Limiting KA upgrade to CX (Added by Ali)
+//          ---------------------------------------------------------------------------------------------
+			if (acList[demandList[i].acInd].acTypeIndex == 1 && demandList[i].elapsedTm[acList[demandList[i].acInd].acTypeIndex]< optParam.KAtoCXThreshold) // acTypeIndex == 1 refers to KA.
+               demandList[i].blockTm[6] = INFINITY; // 6 represents CX type.
+			
+
 			//note: assume order of inclusions
 			//note: prevHardIncl[] default -1, seIndByDay[][] default 0
 			//if( optParam.withFlexOS && acList[demandList[i].acInd].numIncl && acList[demandList[i].acInd].inclInfoP->prevHardIncl[origDemInfos[demandList[i].origDemInd].inclusionInd] >= acList[demandList[i].acInd].inclInfoP->seIndByDay[0][day] )
@@ -796,6 +805,28 @@ static int createMultiTripNodes(int day, int m)
 				}
 
 				newTrip = &demandList[i];
+
+
+//				-------------------------------------------------------------------------------------------------------------------------------------------------
+//				New coding block-- If the required time between trips of different aircraft types is greater than 1.5 hours, the corresponding duty is not created
+//				-------------------------------------------------------------------------------------------------------------------------------------------------
+				
+//				if (lastTrip->aircraftTypeID != newTrip->aircraftTypeID) {
+//					//calculate required time between trips
+//					intTrTm = lastTrip->turnTime;
+//					if(lastTrip->inFboID > 0 && newTrip->outFboID > 0 && lastTrip->inFboID != newTrip->outFboID)
+//						intTrTm += optParam.fboTransitTm;
+
+//					if(newTrip->predDemID == lastTrip->demandID){ //new trip is tied to last trip, and we will assume that scheduled turn time is feasible
+//						if((int)(newTrip->reqOut - (lastTrip->reqOut + lastTrip->elapsedTm[j]*60))/60 < intTrTm)
+//							intTrTm = (int)(newTrip->reqOut - (lastTrip->reqOut + lastTrip->elapsedTm[j]*60))/60 - 1;  //allow one minute buffer for rounding
+//					}	
+//					if (intTrTm > 90)
+//						continue;
+//				}
+					
+//				---------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 				//START - check if we can create a 2DutyDay duty - 2DutyDay - 05/12/10 ANG
 				if(optParam.maxSecondDutyTm > 0 && newTrip->isAppoint == 0 && twoDutyCandidate == 0){
