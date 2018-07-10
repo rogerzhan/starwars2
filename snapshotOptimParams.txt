@@ -1,0 +1,962 @@
+#$LastChangedDate: 2008-01-23 14:23:17 -0500 (Wed, 23 Jan 2008) $
+#$Revision: 6955 $
+#$LastChangedBy: lzhan $
+#$HeadURL: http://csintranetdev01/repos/trunk/optimizer/config/snapshotOptimParams.txt $
+#$Id: snapshotOptimParams.txt 6955 2008-01-23 19:23:17Z lzhan $
+# this is the optimParams.txt to be used LOCALLY
+pdataPath = localpdata.txt
+#database = schedule
+#database_oag = oag
+#remotedatabase = schedule
+#oracleDB  =  CSFLTOPS
+#oracleDBSS = ssoft
+logDir = .\LogFiles
+verbose = Y
+updateRemoteServer = N
+oracleDirect = 0
+oracleScript = "c:/project/optimizerOAG/optProjLocal/CSHOpt_main/Debug/oracle/runOracleSql.sh" 
+
+################################################################################
+# default taxiIn and taxiOut times
+################################################################################
+# select
+#  round(avg(abs(actualoff - actualout) * 1440)) AS avg_diff_in_minutes
+# from
+#  logpageleg
+# where
+#  scheduledout >= to_date('2005-03-09 00:00','YYYY-MM-DD HH24:MI') and
+#  actualoff is not null and
+#  actualout is not null;
+# 
+# avg_diff_in_minutes 
+# ===================
+#                   8
+# 
+# select
+#  round(avg(abs(actualin - actualon) * 1440)) AS avg_diff_in_minutes
+# from
+#  logpageleg
+# where
+#  scheduledout >= to_date('2005-03-09 00:00','YYYY-MM-DD HH24:MI') and
+#  actualin is not null and
+#  actualon is not null;
+#
+# avg_diff_in_minutes
+# ===================
+#                   6
+#taxiInTm = 6                   # in minutes. based on average difference between actualin and actualon over the last year
+#taxiOutTm = 8                  # in minutes. based on average difference between actualoff and actualout over the last year
+######################################################################################
+
+################################################################################
+# Parameters read in by function readOptParams() in CSHOpt_input.c:
+
+paramsOracle           =     0   #determine if update parameters value from oracle database
+estimateCrewLoc        =     0    #Estimate crew location from bitwise crew assignment
+autoFlyHome            =     0
+beyondPlanningWindowBenefit = 120	#Benefit (per hour) of tour time overlap beyond the planning window.
+changeNxtDayPenalty    =     0
+changeTodayPenalty     =     0
+charterMacDmd          =     0    #consider chartering Mac demands if possible - MAC - 11/18/11 ANG
+crewAllAc							 =     0		#crewing all aircraft - Fei DL - 11/08/11 ANG
+crewDutyAfterCommFlt   =   7      #shreshhold to have crew continue working or get rest after commercial travel, unit Hours
+crewPairBonus          =     0.0  #100.0
+cutoffForFinalRepo     =   720    #minutes after midnight local time
+dayEndTime             =   540    #minutes after midnight GMT time
+downgrPairPriority1    =     1    #if crew has done something, downgrade priority 1 to priority 2 - 02/02/09 ANG
+dutyStartFromMidnight  =     0    #minutes after midnight local time in order for crew duty to start - 10/30/07 ANG 06/23/08 RLZ
+earlyCostPH            =   100.0
+earlierAvailability    =   1    #to get earlier availDT for crew - 10/30/07 ANG
+extendCrew             =   1
+fboTransitTm           =    10
+fillMissingRepo        =   1
+finalPostFltTm         =    90 #90
+firstPreFltTm          =    90 #90
+firstDayShortDutyStart =   300   #minutes from midnight from which short duty start limit begins - FATIGUE - 02/25/10 ANG
+firstDayShortDutyEnd   =   300   #480   #minutes from midnight from which short duty start limit ends - FATIGUE - 02/25/10 ANG
+flexMxDir							 =     0	 #direction of flex : 1)both 2)forward 3)backward - same with flex os dir - FlexMX - 08/10/11 ANG
+flexMxTime						 =    0	 #hours where flexible maintenance start time can be flexed - FlexMX - 08/10/11 ANG
+flexMxLoc 						 =     0	 #indicator whether SMX location can be flexed - FlexMX - 08/10/11 ANG
+flexUmxTime            =     0   #hours where service check (descriptor type ID = 5) - FlexMX - 09/15/11 ANG
+fuelStopTm             =    30
+inclContingencyDmd     =     0
+inclInfeasExgSol       =     1
+includeLockedUmlg      =     0
+ignoreSwapLoc          =     0
+ignoreMac              =     0
+ignoreMacDmd           =     0
+ignoreMacOS            =     0
+ignoreMacOSMX          =     0
+ignoreAllOS            =     0
+ignorePairConstraints  =     0
+lateCostPH             =   100.0
+macBonus							 =      0.0  #bonus of putting Mac owner's trip on the corresponding Mac - MAC - 09/05/08 ANG
+macPenalty             =      0.0  #additional cost per hour for putting a regular demand on Mac - MAC - 10/23/08 ANG
+maintTmForReassign     =   600
+maintTurnTime          =   120		#180
+maxCrewExtension       =   960   #960    #max minutes crew can get home after tour end - 04/21/08 ANG
+maxDutyTm              =   840
+maxSecondDutyTm	       =   840    #max duty time in minutes for second duty - 2DutyDay - 05/20/10 ANG
+maxFakeMaintRec        =   200
+maxFlightTm            =   600
+maxRepoTm              =   240    #360
+minCharterTime         =   120
+minRestTm              =   600
+minSecondRestTm        =   600    #min rest time in minutes after second duty - 2DutyDay - 05/20/10 ANG
+minTimeToDuty          =    60    #60
+minTimeToNotify        =    60    #60
+minTmToTourStart       =    60    #60
+crewTourStartInMin     =   0  #minutes after midnight local time a crew can start the tour 
+numToursPerCrewPerItn  =   10   #used when adding new reduced cost columns to each LP iteration
+nonRevContractID       =    1   # default is 1 is just a place holder. additional Non revenue contract or user chose to do so. this can be expanded to a list. RLZ 11/02/2010
+overTimeCost           =   500.0  #600.0
+overTimeHalfCost       =   0.0  #600.0
+pairingLevel           =     2
+pairingModelRHS        =     1  #crew can appear in how many pairs in pairing model - 12/10/09 ANG
+peakDayLevel_1_Adj     =   180
+peakDuration           =   720
+peakGMTDuration        =   720
+peakGMTStart           =   720
+peakOverlapBenefit     =   700
+peakStart              =   480
+planningWindowDuration =     2
+planningWindowStart    =    60   #180   #number of minutes after current time that planning window starts
+planningFakeRuntime    =     0   #number of minutes after current time that fake runtime starts - 02/19/08 ANG
+postArrivalTime        =    45   #45   #
+postFlightTm           =    75   #45   #75   #90
+preBoardTime           =    60   #60
+preOCFtime             =     0   #20 Additional turn time before OCF (in addition to original turnTime) - 10/07/11 ANG
+postOCFtime            =    15   #60   #20 Additional turn time after OCF (in addition to original turnTime) - 10/07/11 ANG
+preFlightTm            =    60   #60   #60
+printLP  	             =     0   #print LP file of optimization model - 10/18/10 ANG
+priorityBenefit        = 10000 800 400 200 #Benefit of pairing pilots with priority 1..4
+priorityBftWt          =   0.0 #0.5   
+prohibitStealingPlanes =     1
+restToDutyTm           =    120   #120
+runType                =     0
+runOptStats            =     0
+runOptStatsByDay       =     0   #Run opt stats, broken down by day - 12/05/08 ANG
+runWithContingency     =     0
+runWithoutExgSol	     =     0
+shortDutyHrDif         =     0  #num of hours diff from std 14hr - only 1st day and if duty starts 5-8AM - FATIGUE - 02/05/10 ANG
+storePairingResult     =     0   #Store pairing into MySQL table - 02/22/10 ANG
+ssoftFromBW            =     1   #create a fake ssoft record, if there is duty line on that day 02/26/2010 RLZ
+taxiInTm               =     2
+taxiOutTm              =     2
+testCombineMaint       =     0  #fei FA test
+testOutTmWindow        =     0  #fei FA test
+ticketCostFixed        =   303.14   #150.0
+ticketCostVar          =   0.085    #0.05
+travelcutoff				   =    24   #number of HOURS after (fake) runtime the travel info will be read - 09/11/09 ANG
+turnTime               =    60   #60   #60
+uncovDemoPenalty       =  20000.0
+uncovHardApptPenalty   =  20000.0
+uncovSoftApptPenalty   =    0.0
+uncovMaintPenalty      =  30000.0
+uncovFlyHomePenalty    =    0.0  #Penalty for not bringing PIC home - 04/22/08 ANG
+uncovFlyHomePenalty2   =    0.0  #Penalty for not bringing SIC home - 04/22/08 ANG
+uncovVacPenalty				 =    0.0  #Penalty for not bringing Vac to base - VAC - 12/13/10 ANG
+useOTFcrew             =    0   #use crews under OTF status in ssoft - 10/15/09 ANG
+vectorWin              =    60
+withOag                =    N
+withOcf                =    0		#consider OCF after MX automatically - 10/12/11 ANG
+withCTC                =    0
+withDQ                 =    0
+withMac                =    0
+withFlexOS	           =    0  #whether flex OS capability is on - 03/14/11 ANG
+withVac                =    0
+vacToBase	             =    0  #if Vac required to be back at base at the end of pw - VAC - 12/13/10 ANG
+xsCharterPenalty       =    0.0 2000.0 5000.0
+dutyNodeAdjInterval    =  60    #30In minutes, used in createOneTripNodes to flex the trip
+maxFirstFlexE          =  1      #maximum number a demand can be flex early for the first
+maxFirstFlexL          =  3      #  3 maximum number a demand can be flex late for the first
+noEarlyThanFlex        =  240    #in minutes past mid night local time
+minHoursFromNowFlex    =  12      #minimum number of hours from now/runTime (or fakeRunTime) for demand to be flexed - 06/27/2017 ANG
+maxHoursFromNowFlex    =  48     #maximum number of hours from now/runTime (or fakeRunTime) for demand to be flexed - 06/27/2017 ANG
+percentCreateDutyArc   =  80    #percentage (0-100) of select-duty and select-arc creation to reduce problem size; 100 = full, 60 = create only 60% of possible duty/arc - 06/27/2017 ANG
+earlyCostPH_recovery   =  100.0   #penalty cost per hour for starting a recovery trip early
+lateCostPH_recovery    =  100.0   #penalty cost per hour for starting a recovery trip late
+recoveryAdj_early      =  60    #flex earlier for recovery demand (minutes)
+recoveryAdj_late       =  180   #flex later for recovery demand (minutes)
+downgradePenaltyRatio  =  0.2   #incentive for not  downgradeing in recovery, relative to charter cost
+cutoffForShortDuty     =  300   #240 #minutes after midnight local time RLZ - it is 5AM under new fatigue rule - FATIGUE - 02/05/10 ANG
+shortDutyTm            =  600   #480 #in minute, duty time for a crew starting before cutyoffForShortDuty RLZ - it is 12hr under new fatigue rule - FATIGUE - 02/05/10 ANG
+minRestTmLong          =  600   #840   #960 #rest time for early duty
+exgCPACLock            =  0     #flag for not re assign existing crew pairs
+exgCPACBonus           =  90.0     #CPAC - 02/19/09 ANG
+updateforSimu          =  0   #determine if write data in proposed_managedleg into managedleg table, i.e, used for simulation
+sendhomecutoff         =  12  #beyond this parameter will buy tickets for crew back home  
+useSeparateMacDOC      =  1  
+useSeparateMacBonus    =  1   #if Mac bonus per MAC is implemented - 12/14/10 ANG 
+useSeparateCsAcDOC     =  1   #if separate DOC for some citationAir aircraft is considered - 12/23/10 ANG
+pairSameBaseBonus 		 =  1000.0 500.0 200.0 0.0 0.0  #bonus for pairing pilots having close by bases [exact same base, 15min flight, 30min flight, 1hr flight, 2hr flight] - 08/05/09 ANG
+fitModel               =  0
+uptest                 =  0
+fitModelBP 						 =  12	24	48	72
+fitModelSlope					 =  1.05	1.1	1.15	1.3	1.5
+fitModelConst					 =  3000
+
+################################################################################
+
+################################################################################
+# aircraft type list
+################################################################################
+# ac_type_names values are used to prefix _ac_type_id, _seq_pos, _chrtr_cost, _oper_cost, _taxi_cost
+# to get the variable names below. Make sure ac_type_names is in sequence position order.
+ac_type_names = CJ1 Bravo CJ3 CJ4 XLS Sov CX
+
+CJ1_ac_type_id   =    6
+CJ1_seq_pos      =    3
+CJ1_chrtr_cost   = 8120.0
+CJ1_oper_cost    = 1946.00
+CJ1_taxi_cost    =   57.2 # MADE THIS UP
+CJ1_std_rev      = 4945.00
+#CJ1_maxUpgrades  = 6
+CJ1_maxUpgrades  = 0
+CJ1_capacity     = 6
+CJ1_mac_cost	   = 4094.00
+CJ1_pre_flight   = 60
+
+Bravo_ac_type_id =    5
+Bravo_seq_pos    =    4
+Bravo_chrtr_cost = 7200.0
+Bravo_oper_cost  = 1172.00
+Bravo_taxi_cost  =   67.1 # MADE THIS UP
+Bravo_std_rev    = 4295.00
+#Bravo_maxUpgrades  = 5
+Bravo_maxUpgrades  = 3
+Bravo_capacity     = 8
+Bravo_mac_cost     = 1172.00
+Bravo_pre_flight   = 60 #60 90
+
+CJ3_ac_type_id   =   54
+CJ3_seq_pos      =    5
+CJ3_chrtr_cost   = 8120.0
+CJ3_oper_cost    = 1716.00
+CJ3_taxi_cost    =  112.3 # MADE THIS UP
+CJ3_std_rev      = 5700.00
+#CJ3_maxUpgrades  = 4
+CJ3_maxUpgrades  = 0
+CJ3_capacity     = 6
+CJ3_mac_cost     = 2242.00
+CJ3_pre_flight   = 60
+
+CJ4_ac_type_id   =   76
+CJ4_seq_pos      =    6
+CJ4_chrtr_cost   = 8328.0
+CJ4_oper_cost    = 2329.00
+CJ4_taxi_cost    =  122.3 # MADE THIS UP
+CJ4_std_rev      = 6145.00
+#CJ4_maxUpgrades  = 3
+CJ4_maxUpgrades  = 0
+CJ4_capacity     = 9
+CJ4_mac_cost     = 3158.00
+CJ4_pre_flight   = 60
+
+XLS_ac_type_id =   11
+XLS_seq_pos    =    7
+XLS_chrtr_cost = 9100.0
+XLS_oper_cost  = 2192.00
+XLS_taxi_cost  =  131.5 # MADE THIS UP
+XLS_std_rev    = 7495.00
+#XLS_maxUpgrades  = 2
+XLS_maxUpgrades  = 0
+XLS_capacity     = 9
+XLS_mac_cost     = 2192.00
+XLS_pre_flight   = 60
+
+Sov_ac_type_id =   52
+Sov_seq_pos    =    8
+Sov_chrtr_cost = 11750.0
+Sov_oper_cost  = 3027.00
+Sov_taxi_cost  =  105.1 # MADE THIS UP
+Sov_std_rev    = 8600.00
+#Sov_maxUpgrades  = 1
+Sov_maxUpgrades  = 0
+Sov_capacity     = 9
+Sov_mac_cost     = 4094.00
+Sov_pre_flight   = 60
+
+CX_ac_type_id =   20
+CX_seq_pos    =    9
+CX_chrtr_cost = 12493.0
+CX_oper_cost  = 3775.00
+CX_taxi_cost  =  125.1 # MADE THIS UP
+CX_std_rev    = 9800.00
+CX_maxUpgrades  = 0
+CX_capacity     = 9
+CX_mac_cost     = 4782.00
+CX_pre_flight   = 60
+
+#downgradeRecovery = 1 2 3 4 5 6
+#upgradeRecovery = 6 5 4 3 2 1
+
+downgradeRecovery = 1 2 3 4 5 6
+upgradeRecovery = 6 5 4 3 2 1
+
+# Runway graph values
+##############################################
+## These are numbers from Matt. L email dated
+## on May 1st.
+##############################################
+##                          minimum   minimum
+##                           runway    runway
+##                           length    length
+##   ac type     altitude       dry       wet
+#############   ########## ######### ######### changed BRAVO RUNWAY FROM 3700 TO 3200 TO repurpose it to King Air 
+CJ1_runway00    =      0      4000      5300
+CJ1_runway01    =   3000      4000      5600
+CJ1_runway02    =   6000      4400      6000
+CJ1_runway03    =  12000      9800      9800
+Bravo_runway00  =      0      3200      6100
+Bravo_runway01  =   3000      4400      6800
+Bravo_runway02  =   6000      5000      7700
+Bravo_runway03  =  12000      6800      10500
+CJ3_runway00    =      0      3700      5300
+CJ3_runway01    =   3000      4000      5700
+CJ3_runway02    =   6000      4000      6100
+CJ3_runway03    =  12000      5200      6800
+CJ4_runway00    =      0      4000      6100
+CJ4_runway01    =   3000      4300      6500
+CJ4_runway02    =   6000      4600      7000
+CJ4_runway03    =  12000      6300      8500
+XLS_runway00    =      0      4000      6100
+XLS_runway01    =   3000      4300      6500
+XLS_runway02    =   6000      4600      7000
+XLS_runway03    =  12000      6300      8500
+Sov_runway00    =      0      4000      5100
+Sov_runway01    =   3000      4000      5400
+Sov_runway02    =   6000      4200      5800
+Sov_runway03    =  12000      5500      6900
+CX_runway00     =      0      5000      5100
+CX_runway01     =   3000      5000      5400
+CX_runway02     =   6000      5000      5800
+CX_runway03     =  12000      5000      6900
+##############################################
+# create aircraftType-airport (type 3) exclusions based on WET or DRY runway lengths.
+type_3_exclusions = DRY
+
+
+################################################################################
+# default Fuel Stop time fuelStopTime = 30 
+# in minutes. I just made this number up. We can adjust it as required. For now logic assumes it does not include taxi time.
+################################################################################
+
+legSQL = "select\n\
+    'mgdleg' AS rowtype,\n\
+    aom.airopsId AS rec_id,\n\
+    ac.aircraftid,\n\
+    aom.aircraftRegistration AS registration,\n\
+    aom.atlasFlightId AS demandid,\n\
+    aom.fromAirportId AS outaptid,\n\
+    aom.fromAirport AS outicao,\n\
+    aom.toAirportId AS inaptid,\n\
+    aom.toAirport AS inicao,\n\
+    aom.fromFboId as outfboid,\n\
+    aom.toFboId as infboid,\n\
+    date_format(aom.scheduledDepartureDateTimeUTC,'%Y/%m/%d %H:%i') as rec_outtime,\n\
+    date_format(aom.scheduledArrivalDateTimeUTC,'%Y/%m/%d %H:%i') as rec_intime,\n\
+    0 AS manuallyassigned\n\
+from\n\
+    vairopsmovement aom,\n\
+    Aircraft ac\n\
+where\n\
+    aom.scheduledDepartureDateTimeUTC >= '${windowStart}'\n\
+    and aom.scheduledDepartureDateTimeUTC <  '${windowEnd}'\n\
+    and aom.aircraftRegistration = ac.tailNumber\n\
+    and UPPER(aom.aircraftRegistration) like 'N%UP'\n\
+    and aom.fromAirportId is not null and aom.toAirportId is not null\n\
+    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
+order by \n\
+rec_outtime"
+
+
+################################################################################
+#Fuel  Stop Leg  in managedLeg and logpageleg
+
+
+fuelLegSQL = "select \n\
+    null AS rowtype,\n\
+    null AS rec_id,\n\
+    null AS aircraftid,\n\
+    null AS registration,\n\
+    null AS demandid,\n\
+    null AS outaptid,\n\
+    null AS outicao,\n\
+    null AS inaptid,\n\
+    null AS inicao,\n\
+    null AS outfboid,\n\
+    null AS infboid,\n\
+    null AS rec_outtime,\n\
+    null AS rec_intime\n\
+from dual where 1=0"
+ 
+ 
+demandSQL = "select \n\
+  f.flightId as demandid, \n\
+  m.memberId as ownerid, \n\
+  m.memberNumber as contractid, \n\
+  f.fromAirportId as outaptid, \n\
+  f.fromFBOId as outfboid, \n\
+  f.toAirportId as inaptid, \n\
+  f.toFBOId as infboid, \n\
+  date_format(f.scheduledDepartureDateTimeUTC, '%Y/%m/%d %H:%i') as outtime, \n\
+  date_format(f.scheduledArrivalDateTimeUTC, '%Y/%m/%d %H:%i') as intime, \n\
+  case when f.slideafter+f.slidebefore > 0 then 1 else 0 end as flexschedule,  \n\
+  ifnull(f.slidebefore,0) as flexearly,  \n\
+  ifnull(f.slideafter,0) as flexlate,  \n\
+  case when at.aircraftTypeId = 1 then 5 else 11 end as aircrafttypeid, \n\
+  case when at.sortOrder = 0 then 4 else 7 end as sequenceposition, \n\
+  case when upper(at.typeName) = 'KING AIR 350I' then 'Bravo' else 'Excel' end as ac_type, \n\
+  fp.numberofpassengers as numberofpassengers, \n\
+  1 as outCountryID, \n\
+  1 as inCountryID, \n\
+  aout.runwayLength as outRunway, \n\
+  ain.runwayLength as inRunway, \n\
+  case when f.legtype = 'R135' then 1 else 0 end as requires135, \n\
+  0 as newVector,  \n\
+  f.reservationId as tripnumber \n\
+from \n\
+    Flight f \n\
+    inner join Airport aout on aout.airportId = f.fromAirportId \n\
+    inner join Airport ain on ain.airportId = f.toAirportId \n\
+    inner join (select flightId, count(fp.passengerId) as numberofpassengers  \n\
+    from FlightPassenger fp group by flightId) fp on fp.flightId = f.flightId \n\
+    inner join AircraftType at on f.requestedAircraftId = at.aircraftTypeId \n\
+    inner join Reservation r on r.reservationId = f.reservationId \n\
+    inner join Member m on m.memberId = r.memberId \n\
+    inner join GamaFlightDateLog gdl ON f.flightId = gdl.flightId \n\
+where \n\
+    UPPER(f.status) in ('LOGGED','FLOWN','BOOKED','APPROVED') \n\
+    and f.scheduledDepartureDateTimeUTC >= '${windowStart}' \n\
+    and f.scheduledDepartureDateTimeUTC < '${windowEnd}' \n\
+    and UPPER(at.typeName) in ('KING AIR 350I', 'CE-560-XL') \n\
+    and gdl.cancelRequestAcceptedDate is NULL \n\
+    AND  ( (right(f.tailNumber,2) = 'UP' and length(f.tailNumber) <> 0) OR (f.operatorId = 7 and length(f.operatorId) <> 0)) \n\
+    AND f.flightId not in (select atlasFlightId from AiropsMovement where aircraftRegistration like 'N9%UP' and scheduledDepartureDateTimeUTC >= '${windowStart}' and scheduledDepartureDateTimeUTC < '${windowEnd}' and atlasFlightId is not null) \n\
+order by\n\
+ outtime"
+
+#  aout.country as outCountryID, \n\
+#  ain.country as inCountryID, \n\
+
+
+#################################################################################
+#allDemandSQL : get all demands including ones in locked charters - 02/12/08 ANG
+#################################################################################
+allDemandSQL = "select \n\
+  f.flightId as demandid, \n\
+  m.memberId as ownerid, \n\
+  m.memberNumber as contractid, \n\
+  f.fromAirportId as outaptid, \n\
+  f.fromFBOId as outfboid, \n\
+  f.toAirportId as inaptid, \n\
+  f.toFBOId as infboid, \n\
+  date_format(f.scheduledDepartureDateTimeUTC, '%Y/%m/%d %H:%i') as outtime, \n\
+  date_format(f.scheduledArrivalDateTimeUTC, '%Y/%m/%d %H:%i') as intime, \n\
+  case when f.slideafter+f.slidebefore > 0 then 1 else 0 end as flexschedule,  \n\
+  ifnull(f.slidebefore,0) as flexearly,  \n\
+  ifnull(f.slideafter,0) as flexlate,  \n\
+  case when at.aircraftTypeId = 1 then 5 else 11 end as aircrafttypeid, \n\
+  case when at.sortOrder = 0 then 4 else 7 end as sequenceposition, \n\
+  case when upper(at.typeName) = 'KING AIR 350I' then 'Bravo' else 'Excel' end as ac_type, \n\
+  fp.numberofpassengers as numberofpassengers, \n\
+  1 as outCountryID, \n\
+  1 as inCountryID, \n\
+  aout.runwayLength as outRunway, \n\
+  ain.runwayLength as inRunway, \n\
+  case when f.legtype = 'R135' then 1 else 0 end as requires135, \n\
+  0 as newVector,  \n\
+  f.reservationId as tripnumber \n\
+from \n\
+    Flight f \n\
+    inner join Airport aout on aout.airportId = f.fromAirportId \n\
+    inner join Airport ain on ain.airportId = f.toAirportId \n\
+    inner join (select flightId, count(fp.passengerId) as numberofpassengers  \n\
+    from FlightPassenger fp group by flightId) fp on fp.flightId = f.flightId \n\
+    inner join AircraftType at on f.requestedAircraftId = at.aircraftTypeId \n\
+    inner join Reservation r on r.reservationId = f.reservationId \n\
+    inner join Member m on m.memberId = r.memberId \n\
+where \n\
+    UPPER(f.status) in ('LOGGED','FLOWN','BOOKED','APPROVED') \n\
+    and f.scheduledDepartureDateTimeUTC >= '${windowStart}' \n\
+    and f.scheduledDepartureDateTimeUTC < '${windowEnd}' \n\
+    and UPPER(at.typeName) in ('KING AIR 350I', 'CE-560-XL') \n\
+order by\n\
+ outtime"
+
+ 
+# whereAreThePlanesSQL
+# Note that for rowtypes 'mgdleg' and 'logmgdleg' we no longer skip positioning # legs (demandid is null) where the rec_outtime is greater than the current time.
+# The current time is EST time + 5 hours so we are comparing zulu to zulu.
+whereAreThePlanesSQL = "select \n\
+    'aircraft' AS rowtype, \n\
+    ac.aircraftid AS rec_id, \n\
+    ac.aircraftid AS aircraftid, \n\
+    ac.tailNumber AS registration, \n\
+    case when ac.aircrafttypeid = 1 then 5 else 11 end AS ac_type, \n\
+    null AS demandid, \n\
+    null AS outaptid, \n\
+    null AS outicao, \n\
+    null AS inaptid, \n\
+    null AS inicao, \n\
+    null AS outfboid, \n\
+    null AS infboid, \n\
+    null AS rec_outtime, \n\
+    null AS rec_intime, \n\
+    null AS actualout, \n\
+    null AS actualoff, \n\
+    null AS actualon, \n\
+    null AS actualin, \n\
+    case when ac.aircraftTypeId = 1 then 4 else 7 end as sequenceposition, \n\
+    null AS crewnotified, \n\
+    null AS reqOCF \n\
+from  \n\
+  Aircraft ac \n\
+  inner join AircraftType act on act.aircraftTypeId = ac.aircraftTypeId \n\
+where  \n\
+  UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL') \n\
+  and UPPER(ac.tailNumber) like 'N%UP' \n\
+  and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
+union all \n\
+select\n\
+    'mgdleg' AS rowtype,\n\
+    aom.airopsId AS rec_id,\n\
+    ac.aircraftid,\n\
+    aom.aircraftRegistration AS registration,\n\
+    case when ac.aircrafttypeid = 1 then 5 else 11 end AS ac_type,\n\
+    aom.atlasFlightId AS demandid,\n\
+    aom.fromAirportId AS outaptid,\n\
+    aom.fromAirport AS outicao,\n\
+    aom.toAirportId AS inaptid,\n\
+    aom.toAirport AS inicao,\n\
+    aom.fromFboId AS outfboid,\n\
+    aom.toFboId AS infboid,\n\
+    date_format(ifnull(aom.actualDepartureDateTimeUTC,aom.scheduledDepartureDateTimeUTC),'%Y/%m/%d %H:%i') AS rec_outtime,\n\
+    date_format(ifnull(aom.actualArrivalDateTimeUTC,aom.scheduledArrivalDateTimeUTC),'%Y/%m/%d %H:%i') AS rec_intime,\n\
+    date_format(aom.actualDepartureDateTimeUTC,'%Y/%m/%d %H:%i')  AS actualout,\n\
+    date_format(aom.actualTakeOffDateTimeUTC,'%Y/%m/%d %H:%i') AS actualoff,\n\
+    date_format(aom.actualLandingDateTimeUTC,'%Y/%m/%d %H:%i')  AS actualon,\n\
+    date_format(aom.actualArrivalDateTimeUTC,'%Y/%m/%d %H:%i') AS actualin,\n\
+    case when ac.aircraftTypeId = 1 then 4 else 7 end as sequenceposition,\n\
+    0 as crewnotified,\n\
+    null AS reqOCF\n\
+from\n\
+    vairopsmovement aom,\n\
+    Aircraft ac\n\
+where\n\
+    aom.scheduledDepartureDateTimeUTC >= date_format(date_sub('${windowStart}', interval 21 day),'%Y/%m/%d %H:%i')\n\
+    and aom.scheduledDepartureDateTimeUTC <  date_format(date_add('${windowEnd}', interval 5 day),'%Y/%m/%d %H:%i')\n\
+    and ac.tailNumber = aom.aircraftRegistration\n\
+    and UPPER(aom.aircraftRegistration) like 'N%UP' \n\
+    and aom.fromAirportId is not null and aom.toAirportId is not null\n\
+    and aom.airopsId is not null \n\
+    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
+union all\n\
+select \n\
+    'mtcnote' AS rowtype, \n\
+    aode.airopsDiaryEventsId AS rec_id, \n\
+    ac.aircraftid AS aircraftid, \n\
+    ac.tailNumber AS registration, \n\
+    case when ac.aircrafttypeid = 1 then 5 else 11 end AS ac_type, \n\
+    null AS demandid, \n\
+    aode.airportId AS outaptid, \n\
+    aode.airport AS outicao, \n\
+    aode.airportId AS inaptid, \n\
+    aode.airport AS inicao, \n\
+    null AS outfboid, \n\
+    null AS infboid, \n\
+    date_format(IFNULL(aode.actualStartDateTimeUTC, aode.scheduledStartDateTimeUTC),'%Y/%m/%d %H:%i') AS rec_outtime, \n\
+    date_format(IFNULL(aode.actualEndDateTimeUTC, aode.scheduledEndDateTimeUTC),'%Y/%m/%d %H:%i') AS rec_intime, \n\
+    null AS actualout, \n\
+    null AS actualoff, \n\
+    null AS actualon, \n\
+    null AS actualin, \n\
+    case when ac.aircraftTypeId = 1 then 4 else 7 end as sequenceposition, \n\
+    null AS crewnotified, \n\
+    0 AS reqOCF \n\
+from \n\
+    AiropsDiaryEvents aode \n\
+    inner join Aircraft ac on aode.aircraftRegistration = ac.tailNumber \n\
+    inner join AircraftType act on act.aircraftTypeId = ac.aircraftTypeId \n\
+where \n\
+    IFNULL(aode.actualStartDateTimeUTC, aode.scheduledStartDateTimeUTC) <= '${windowEnd}'  \n\
+    and IFNULL(aode.actualEndDateTimeUTC, aode.scheduledEndDateTimeUTC) >= date_format(date_sub('${windowStart}', interval 21 day),'%Y/%m/%d %H:%i')  \n\
+    and UPPER(ac.tailNumber) like 'N%UP' \n\
+    and UPPER(aode.legType) in ('M', 'AOG', '!C!','LMX','INSR') \n\
+    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL')\n\
+    and aode.airportId is not null\n\
+    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
+order by aircraftid, rec_outtime"
+
+
+mtcnoteSQL = "select \n\
+    aode.airopsDiaryEventsId as aircraftmaintenancenoteid, \n\
+    ac.aircraftId as aircraftid, \n\
+    aode.airportId as airportid, \n\
+    date_format(IFNULL(aode.actualStartDateTimeUTC, aode.scheduledStartDateTimeUTC),'%Y/%m/%d %H:%i') as currentstarttime, \n\
+    date_format(IFNULL(aode.actualEndDateTimeUTC, aode.scheduledEndDateTimeUTC),'%Y/%m/%d %H:%i') as currentendtime, \n\
+    '0' as apptType, \n\
+    null AS fboid, \n\
+    '1' as priority, \n\
+    '0' as flexdir, \n\
+    '0' as flextime, \n\
+    '0' as flexlocation, \n\
+    '0' as flexairportid, \n\
+    0 as ocfrequired \n\
+from \n\
+    AiropsDiaryEvents aode \n\
+    inner join Aircraft ac on aode.aircraftRegistration = ac.tailNumber \n\
+    inner join AircraftType act on act.aircraftTypeId = ac.aircraftTypeId \n\
+where \n\
+    IFNULL(aode.actualStartDateTimeUTC, aode.scheduledStartDateTimeUTC) < '${windowEnd}' and \n\
+    IFNULL(aode.actualEndDateTimeUTC, aode.scheduledEndDateTimeUTC) > '${windowStart}' and \n\
+    UPPER(aode.legType) in ('M', 'AOG', '!C!','LMX','INSR') and \n\
+    UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL') and \n\
+    UPPER(ac.tailNumber) like 'N%UP'\n\
+    and aode.airportId is not null\n\
+order by \n\
+    currentstarttime"
+    
+    
+#modified for FlexMX with flex location - 08/10/11 ANG
+flexMtcnoteSQL = "select \n\
+    null as aircraftmaintenancenoteid,\n\
+    null as aircraftid,\n\
+    null as airportid,\n\
+    null as currentstarttime,\n\
+    null as currentendtime,\n\
+    null as apptType,\n\
+    null as fboid,\n\
+    null as priority,\n\
+    null as flexdir,\n\
+    null as flextime,\n\
+    null as flexlocation,\n\
+    null as flexairportid,\n\
+    null as ocfrequired\n\
+from dual where 1=0"
+
+   
+airportSQL = "select distinct airportId, icao \n\
+from \n\
+( \n\
+  select \n\
+    aom.toAirportId AS airportid, \n\
+    aom.toAirport AS icao \n\
+  from \n\
+    vairopsmovement aom \n\
+  where \n\
+    aom.scheduledDepartureDateTimeUTC >= '${windowStart}' \n\
+    and aom.scheduledDepartureDateTimeUTC < '${windowEnd}' \n\
+    and aom.toAirportId is not null \n\
+  union all \n\
+  select \n\
+    aom.fromAirportId AS airportid, \n\
+    aom.fromAirport AS icao \n\
+  from \n\
+    vairopsmovement aom \n\
+  where \n\
+    aom.scheduledDepartureDateTimeUTC >= '${windowStart}' \n\
+    and aom.scheduledDepartureDateTimeUTC < '${windowEnd}' \n\
+    and aom.fromAirportId is not null \n\
+ union all \n\
+    select \n\
+    aode.airportId as airportId, \n\
+    aode.airport as icao \n\
+  from \n\
+    AiropsDiaryEvents aode \n\
+  where \n\
+    IFNULL(aode.actualStartDateTimeUTC, aode.scheduledStartDateTimeUTC) <= '${windowEnd}' \n\
+    and IFNULL(aode.actualEndDateTimeUTC, aode.scheduledEndDateTimeUTC) >= '${windowStart}' \n\
+    and aode.airportId is not null\n\
+  union all \n\
+  select \n\
+    apt.airportId as airportId, \n\
+    apt.ICAOcode as icao \n\
+  from \n\
+    Flight f \n\
+    inner join Airport apt on apt.airportId = f.fromAirportId \n\
+  where \n\
+    UPPER(f.status) in ('LOGGED','FLOWN','BOOKED','APPROVED') \n\
+    and f.scheduledDepartureDateTimeUTC >= '${windowStart}' \n\
+    and f.scheduledDepartureDateTimeUTC < '${windowEnd}' \n\
+  union all \n\
+  select \n\
+    apt.airportId as airportId, \n\
+    apt.ICAOcode as icao \n\
+  from \n\
+    Flight f \n\
+    inner join Airport apt on apt.airportId = f.toAirportId \n\
+  where \n\
+    UPPER(f.status) in ('LOGGED','FLOWN','BOOKED','APPROVED') \n\
+    and f.scheduledDepartureDateTimeUTC >= '${windowStart}' \n\
+    and f.scheduledDepartureDateTimeUTC < '${windowEnd}' \n\
+  union all \n\
+  select \n\
+    apt.airportId as airportId, \n\
+    apt.ICAOcode as icao \n\
+  from \n\
+    EmptyLeg el \n\
+    inner join Airport apt on apt.airportId = el.toAirportId \n\
+  where \n\
+    el.estimatedDepartureTime >= '${windowStart}' \n\
+    and el.estimatedDepartureTime < '${windowEnd}' \n\
+) apt order by icao"
+
+
+airportFitSQL = "select 0 as airportid, null as icao from dual where 1=0"
+
+
+exclusionSQL = "select 0 as exc_type, 0 as first_value, 0 as second_value from dual where 1=0"
+
+
+curfewexclusionSQL = "select 0 as exc_type, 0 as first_value, 0 as second_value from dual where 1=0"
+
+
+crewIdSQL = "select\n\
+  crewId,\n\
+  crewCode as employeenumber,\n\
+  ifnull(baseairportid,892) as baseairportid,\n\
+  ifnull(apt.ICAOcode, 'KHPN') as baseicao,\n\
+  crewCode as fileas\n\
+from flightcrew c\n\
+left join Airport apt on apt.airportid = c.baseairportid\n\
+order by crewId"
+
+
+bwCrewPairDataSQL = "select distinct\n\
+    upper(aocd.crewCode) as employeenumber,\n\
+    act.typeName as name,\n\
+    case when ac.aircraftTypeId = 1 then 5 else 11 end as aircraftTypeID,\n\
+    date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS starttime,\n\
+    date_format(aocd.offDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS endtime,\n\
+    aocd.crewId,\n\
+    aocd.crewName as fileas,\n\
+    aocd.airopsCrewDutyId as crewassignmentid,\n\
+    ac.aircraftid,\n\
+    aom.aircraftRegistration as registration,\n\
+    case when UPPER(left(aocd.crewRank,5)) = 'PILOT' then 1 when UPPER (aocd.crewRank) ='PIC' then 1 else 2 end as position,\n\
+    9999 as scenarioid\n\
+from\n\
+    AiropsCrewDuty aocd\n\
+    inner join AiropsCrewDutyMovement aocdm on aocd.airopscrewdutyid = aocdm.airopscrewdutyid\n\
+    inner join vairopsmovement aom on aom.airopsmovementid = aocdm.airopsmovementid\n\
+    inner join Aircraft ac on ac.tailNumber = aom.aircraftRegistration\n\
+    inner join AircraftType act on act.aircraftTypeId = ac.aircraftTypeId\n\
+where\n\
+    aocd.onDutyDateTimeUTC <= '${windowStart}'\n\
+    and aocd.offDutyDateTimeUTC >= date_format(date_sub('${windowStart}' , interval 10 hour), '%Y/%m/%d %H:%i')\n\
+    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL')\n\
+    and UPPER(ac.tailNumber) like 'N%UP'\n\
+    and aocd.crewId is not null\n\
+order by\n\
+    9, 11, 11 desc, 4 desc"
+
+bwCrewDataSQL = "select distinct\n\
+    upper(aocd.crewCode) as employeenumber,\n\
+    case when upper(act.typeName) = 'KING AIR 350I' then 'Bravo' else 'Excel' end as name,\n\
+    case when ac.aircraftTypeId = 1 then 5 else 11 end as aircraftTypeID,\n\
+    date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS starttime,\n\
+    MAX(date_format(aocd.offDutyDateTimeUTC, '%Y/%m/%d %H:%i')) AS endtime,\n\
+    aocd.crewId,\n\
+    aocd.crewName as fileas,\n\
+    aocd.airopsCrewDutyId as crewassignmentid,\n\
+    ac.aircraftid,\n\
+    aom.aircraftRegistration as registration,\n\
+    case when UPPER(left(aocd.crewRank,5)) = 'PILOT' then 1 when UPPER (aocd.crewRank) ='PIC' then 1 else 2 end as position,\n\
+    9999 as scenarioid\n\
+from\n\
+    AiropsCrewDuty aocd,\n\
+    AiropsCrewDutyMovement aocdm,\n\
+    vairopsmovement aom,\n\
+    Aircraft ac,\n\
+    AircraftType act\n\
+where\n\
+    aocd.airopscrewdutyid = aocdm.airopscrewdutyid\n\
+    and aocdm.airopsmovementid = aom.airopsmovementid\n\
+    and ac.tailNumber = aom.aircraftRegistration\n\
+    and act.aircraftTypeId = ac.aircraftTypeId\n\
+    and aom.aircraftRegistration is not null\n\
+    and aocd.onDutyDateTimeUTC < date_format(date_add('${windowEnd}', interval 1 day), '%Y/%m/%d %H:%i')\n\
+    and aocd.offDutyDateTimeUTC > date_format(date_sub('${windowStart}', interval 5 day), '%Y/%m/%d %H:%i')\n\
+    and ac.tailNumber like ('N%UP') \n\
+    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL')\n\
+    and aocd.crewId is not null\n\
+    and aocdm.airopsMovementId not in (1)\n\
+    and aocd.airopsCrewDutyId not in (1)\n\
+GROUP by aocd.crewId,\n\
+    ac.aircraftTypeId,\n\
+    date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i'),\n\
+    ac.aircraftid \n\
+order by 1,4,2,10"
+
+
+
+ssCrewDataSQL = "select distinct\n\
+    cdd.crewCode as zbadgeid,\n\
+    case when cdd.aircrafttypeid = 1 then 'Bravo' else 'Excel' end as zdeptdesc,\n\
+    date_format(cdd.dutydate, '%Y/%m/%d %H:%i') as dtdate,\n\
+    cdd.crewCode as zlname,\n\
+    left(cdd.crewCode,1) as zfname,\n\
+    null as zmname,\n\
+    cdd.crewid AS empid,\n\
+    cdd.crewid as lempinfoid,\n\
+    case when regioncode = 'CA' then 77 when regioncode = 'IOE' then 18 else 16 end as lpostid,\n\
+    case when regioncode = 'CA' then 'Check Airman' when regioncode = 'IOE' then 'IOE Pairing Status' else 'Unrestricted' end as zpostdesc,\n\
+    cdd.position as zshiftdesc,\n\
+    '' as zacccodeid,\n\
+    '' as zacccodedesc,\n\
+    '' as znote\n\
+from\n\
+    crewdutydate cdd\n\
+where\n\
+    cdd.dutydate < date_format(date_add('${windowEnd}', interval 3 day), '%Y/%m/%d %H:%i')\n\
+    and cdd.dutydate > date_format(date_sub('${windowStart}', interval 14 day), '%Y/%m/%d %H:%i')"
+    
+csCrewDataSQL = "select\n\
+    aocd.crewId,\n\
+    date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS starttime,\n\
+    date_format(aocd.offDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS endtime,\n\
+    ac.aircraftId as ca_aircraftid,\n\
+    ac.aircraftId as cd_aircraftid,\n\
+    ac.tailNumber as ca_registration,\n\
+    ac.tailNumber as cd_registration,\n\
+    case when upper(left(aocd.crewRank,5)) = 'PILOT' then 1 when UPPER (aocd.crewRank) ='PIC' then 1 else 2 end as position,\n\
+    date_format(aom.scheduledLandingDateTimeUTC, '%Y/%m/%d %H:%i') AS scheduled_on,\n\
+    date_format(aom.scheduledTakeOffDateTimeUTC, '%Y/%m/%d %H:%i') AS scheduled_off,\n\
+    date_format(aom.actualLandingDateTimeUTC, '%Y/%m/%d %H:%i') AS actual_on,\n\
+    date_format(aom.actualTakeOffDateTimeUTC, '%Y/%m/%d %H:%i') AS actual_off,\n\
+    date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS currdate,\n\
+    date_format(aom.lastUpdateDate, '%Y/%m/%d %H:%i') as lastupdated,\n\
+    9999 as scenarioid\n\
+from\n\
+    AiropsCrewDutyMovement aocdm\n\
+    inner join AiropsCrewDuty aocd on aocd.airopsCrewDutyId = aocdm.airopsCrewDutyId\n\
+    inner join vairopsmovement aom on aom.airopsMovementId = aocdm.airopsMovementId\n\
+    inner join Flight f on f.flightId = aom.atlasFlightId\n\
+    inner join AircraftType act on act.aircraftTypeId = f.requestedAircraftId\n\
+    inner join Aircraft ac on ac.tailNumber = aom.aircraftRegistration\n\
+where 1 = 1\n\
+    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL')\n\
+    and UPPER(f.status) in ('LOGGED','FLOWN','BOOKED','APPROVED')\n\
+    and aocd.onDutyDateTimeUTC < date_format(date_add('${windowEnd}', interval 1 day), '%Y/%m/%d %H:%i')\n\
+    and aocd.offDutyDateTimeUTC > date_format(date_sub('${windowStart}', interval 14 day), '%Y/%m/%d %H:%i')\n\
+    and UPPER(ac.tailNumber) like 'N%UP'  \n\
+    and aocd.crewId is not null\n\
+    and aocd.aircraftRegistration is not null \n\
+    and aocdm.airopsMovementId not in (1) \n\
+    and aocd.airopsCrewDutyId not in (1) \n\
+order by \n\
+    crewid, scheduled_on, starttime"
+
+
+charterStatsSQL = "select 0 as ownerid,\n\
+    0 as trips_since_last_charter,\n\
+    0 as charter_count,\n\
+    0 as trip_count \n\
+from dual where 1=0"
+
+
+pairConstraintsSQL = "select\n\
+  0 as pairconstraintid,\n\
+  0 as crewid1,\n\
+  0 as emp1,\n\
+  0 as crewname1,\n\
+  0 as crewid2,\n\
+  0 as emp2,\n\
+  0 as crewname2,\n\
+  0 as Check_Airman,\n\
+  0 as Standards_Captain,\n\
+  0 as Assistant_Chief_Pilot,\n\
+  0 as Office_Management,\n\
+  0 as Unrestricted,\n\
+  0 as High_Minimums,\n\
+  0 as Restricted,\n\
+  0 as priority,\n\
+  date_format(sysdate(), '%Y/%m/%d') as startdate,\n\
+  date_format(sysdate(), '%Y/%m/%d') as enddate\n\
+from dual where 1=0"
+
+# use SQL below for running on against MySQL db on your workstation
+intnlCertSQL = "select aircraftid from Aircraft where tailNumber like 'N%UP' and aircraftTypeId in \n\
+(select aircraftTypeId from AircraftType where UPPER(typeName) in ('KING AIR 350I', 'CE-560-XL'))"
+
+
+demandnumbyzoneSQL = "select null as CJ1_num,\n\
+                             null as BRV_num,\n\
+	                     null as CJ3_num,\n\
+	                     null as EXL_num,\n\
+	                     null as Sov_num\n\
+	                    from dual where 1=0"
+
+#cstravelSQL = "select null as crewid, \n\
+#   null as departure_aptid,\n\
+#   null as arrival_aptid,\n\
+#   null as dept_time,\n\
+#   null as arr_time,\n\
+#   null as request_id \n\
+#   from dual"
+
+cstravelSQL = ""
+
+cstravelOracleSQL = " "   
+
+peakdayscontractratesOracleSQL = " "                              
+
+csCrewDataOracleSQL = " "  
+    
+ssCrewDataOracleSQL = " " 
+    
+ratioOracleSQL = " "
+
+upgradeDowngradeOracleSQL = " "
+
+timezoneOracleSQL = " "
+
+macInfoSQL = "select null as aircraftid, null as aircrafttypeid, null as contractid, null as macdoc, null as macbonus from dual where 1=0"
+
+vacInfoSQL = "select null as aircraftid, null as aircrafttypeid, null as startaptid, null as endaptid, null as intlcert, null as\n\
+numseats, null as availstarttime, null as availendtime, null as vacdoc from dual where 1=0"
+
+csAcInfoSQL = "select null as aircraftid, null as aircrafttypeid, null as doc from dual where 1=0"
+
+macInfoOracleSQL = " "
+
+statSQL = " "
+
+statSchedSQL = " "
+
+statSchedSQL2 = " "
+
+statSchedSQL3 = " "
+
+macStatSQL = " "
+
+macStatSQL2 = " "
+
+dualQualSQL = "select null as crewid, null as actypeid1, null as actypeid2, null as postid1, null as postid2 from dual where 1=0"
+
+runFillMissingRepoSQL = "CALL proc_createPositionLeg('${windowStart}','${windowEnd}')"
+
+getBlockTimeSQL = "select\n\
+  CASE WHEN LEFT(aircraftType,4)='B350' THEN 2 \n\
+       WHEN aircraftType='C56XWU' THEN 3 \n\
+  END aircraftCd,\n\
+  fromAirportId,\n\
+  toAirportId,\n\
+  MIN( CASE WHEN actualArrivalDateTimeUTC IS NULL THEN scheduledBlockTime ELSE actualBlockTime END) as avgBlockTime \n\
+from AiropsMovement \n\
+where \n\
+    scheduledDepartureDateTimeUTC >= '${windowStart}'\n\
+    and scheduledDepartureDateTimeUTC < '${windowEnd}'\n\
+    and (LEFT(aircraftType,4)='B350' or aircraftType='C56XWU') \n\
+    and fromAirportId is not null \n\
+    and toAirportId is not null \n\
+    and fromAirportId <> toAirportId \n\
+    and scheduledBlockTime > 0 \n\
+group by \n\
+  CASE WHEN LEFT(aircraftType,4)='B350' THEN 5 \n\
+       WHEN aircraftType='C56XWU' THEN 11 \n\
+  END,\n\
+  fromAirportId,\n\
+ toAirportId order by 1,2,3"
