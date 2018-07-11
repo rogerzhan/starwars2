@@ -70,8 +70,8 @@ earlierAvailability    =   1    #to get earlier availDT for crew - 10/30/07 ANG
 extendCrew             =   1
 fboTransitTm           =    10
 fillMissingRepo        =   1
-finalPostFltTm         =    90 #90
-firstPreFltTm          =    90 #90
+finalPostFltTm         =    75 #90
+firstPreFltTm          =    60 #90
 firstDayShortDutyStart =   300   #minutes from midnight from which short duty start limit begins - FATIGUE - 02/25/10 ANG
 firstDayShortDutyEnd   =   300   #480   #minutes from midnight from which short duty start limit ends - FATIGUE - 02/25/10 ANG
 flexMxDir							 =     0	 #direction of flex : 1)both 2)forward 3)backward - same with flex os dir - FlexMX - 08/10/11 ANG
@@ -195,6 +195,7 @@ uptest                 =  0
 fitModelBP 						 =  12	24	48	72
 fitModelSlope					 =  1.05	1.1	1.15	1.3	1.5
 fitModelConst					 =  3000
+KAtoCXThreshold       =  120
 
 ################################################################################
 
@@ -224,10 +225,10 @@ Bravo_oper_cost  = 1172.00
 Bravo_taxi_cost  =   67.1 # MADE THIS UP
 Bravo_std_rev    = 4295.00
 #Bravo_maxUpgrades  = 5
-Bravo_maxUpgrades  = 3
+Bravo_maxUpgrades  = 5
 Bravo_capacity     = 8
 Bravo_mac_cost     = 1172.00
-Bravo_pre_flight   = 60 #60 90
+Bravo_pre_flight   = 90 #60 90
 
 CJ3_ac_type_id   =   54
 CJ3_seq_pos      =    5
@@ -260,7 +261,7 @@ XLS_oper_cost  = 2192.00
 XLS_taxi_cost  =  131.5 # MADE THIS UP
 XLS_std_rev    = 7495.00
 #XLS_maxUpgrades  = 2
-XLS_maxUpgrades  = 0
+XLS_maxUpgrades  = 2
 XLS_capacity     = 9
 XLS_mac_cost     = 2192.00
 XLS_pre_flight   = 60
@@ -364,9 +365,8 @@ where\n\
     aom.scheduledDepartureDateTimeUTC >= '${windowStart}'\n\
     and aom.scheduledDepartureDateTimeUTC <  '${windowEnd}'\n\
     and aom.aircraftRegistration = ac.tailNumber\n\
-    and UPPER(aom.aircraftRegistration) like 'N%UP'\n\
+    and (UPPER(aom.aircraftRegistration) like 'N%UP' OR UPPER(aom.aircraftRegistration)='N489MD')\n\
     and aom.fromAirportId is not null and aom.toAirportId is not null\n\
-    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
 order by \n\
 rec_outtime"
 
@@ -405,9 +405,9 @@ demandSQL = "select \n\
   case when f.slideafter+f.slidebefore > 0 then 1 else 0 end as flexschedule,  \n\
   ifnull(f.slidebefore,0) as flexearly,  \n\
   ifnull(f.slideafter,0) as flexlate,  \n\
-  case when at.aircraftTypeId = 1 then 5 else 11 end as aircrafttypeid, \n\
-  case when at.sortOrder = 0 then 4 else 7 end as sequenceposition, \n\
-  case when upper(at.typeName) = 'KING AIR 350I' then 'Bravo' else 'Excel' end as ac_type, \n\
+  case when at.aircraftTypeId = 1 then 5 when at.aircraftTypeId = 30 then 20 else 11 end as aircrafttypeid, \n\
+  case when at.sortOrder = 0 then 4 when at.sortOrder = 2 then 9 else 7 end as sequenceposition, \n\
+  case when upper(at.typeName) = 'KING AIR 350I' then 'Bravo' when upper(at.typeName) = 'CE-750' then 'CX' else 'Excel' end as ac_type, \n\
   fp.numberofpassengers as numberofpassengers, \n\
   1 as outCountryID, \n\
   1 as inCountryID, \n\
@@ -430,10 +430,9 @@ where \n\
     UPPER(f.status) in ('LOGGED','FLOWN','BOOKED','APPROVED') \n\
     and f.scheduledDepartureDateTimeUTC >= '${windowStart}' \n\
     and f.scheduledDepartureDateTimeUTC < '${windowEnd}' \n\
-    and UPPER(at.typeName) in ('KING AIR 350I', 'CE-560-XL') \n\
+    and UPPER(at.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL') \n\
     and gdl.cancelRequestAcceptedDate is NULL \n\
     AND  ( (right(f.tailNumber,2) = 'UP' and length(f.tailNumber) <> 0) OR (f.operatorId = 7 and length(f.operatorId) <> 0)) \n\
-    AND f.flightId not in (select atlasFlightId from AiropsMovement where aircraftRegistration like 'N9%UP' and scheduledDepartureDateTimeUTC >= '${windowStart}' and scheduledDepartureDateTimeUTC < '${windowEnd}' and atlasFlightId is not null) \n\
 order by\n\
  outtime"
 
@@ -457,9 +456,9 @@ allDemandSQL = "select \n\
   case when f.slideafter+f.slidebefore > 0 then 1 else 0 end as flexschedule,  \n\
   ifnull(f.slidebefore,0) as flexearly,  \n\
   ifnull(f.slideafter,0) as flexlate,  \n\
-  case when at.aircraftTypeId = 1 then 5 else 11 end as aircrafttypeid, \n\
-  case when at.sortOrder = 0 then 4 else 7 end as sequenceposition, \n\
-  case when upper(at.typeName) = 'KING AIR 350I' then 'Bravo' else 'Excel' end as ac_type, \n\
+  case when at.aircraftTypeId = 1 then 5 when at.aircraftTypeId = 30 then 20 else 11 end as aircrafttypeid, \n\
+  case when at.sortOrder = 0 then 4 when at.sortOrder = 2 then 9 else 7 end as sequenceposition, \n\
+  case when upper(at.typeName) = 'KING AIR 350I' then 'Bravo' when upper(at.typeName) = 'CE-750' then 'CX' else 'Excel' end as ac_type, \n\
   fp.numberofpassengers as numberofpassengers, \n\
   1 as outCountryID, \n\
   1 as inCountryID, \n\
@@ -481,7 +480,7 @@ where \n\
     UPPER(f.status) in ('LOGGED','FLOWN','BOOKED','APPROVED') \n\
     and f.scheduledDepartureDateTimeUTC >= '${windowStart}' \n\
     and f.scheduledDepartureDateTimeUTC < '${windowEnd}' \n\
-    and UPPER(at.typeName) in ('KING AIR 350I', 'CE-560-XL') \n\
+    and UPPER(at.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL') \n\
 order by\n\
  outtime"
 
@@ -508,16 +507,15 @@ whereAreThePlanesSQL = "select \n\
     null AS actualoff, \n\
     null AS actualon, \n\
     null AS actualin, \n\
-    case when ac.aircraftTypeId = 1 then 4 else 7 end as sequenceposition, \n\
+    case when ac.aircraftTypeId = 1 then 4 when ac.aircraftTypeId = 30 then 9 else 7 end as sequenceposition, \n\
     null AS crewnotified, \n\
     null AS reqOCF \n\
 from  \n\
   Aircraft ac \n\
   inner join AircraftType act on act.aircraftTypeId = ac.aircraftTypeId \n\
 where  \n\
-  UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL') \n\
-  and UPPER(ac.tailNumber) like 'N%UP' \n\
-  and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
+  UPPER(act.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL') \n\
+  and (UPPER(ac.tailNumber) like 'N%UP' or UPPER(ac.tailNumber)='N489MD') \n\
 union all \n\
 select\n\
     'mgdleg' AS rowtype,\n\
@@ -538,7 +536,7 @@ select\n\
     date_format(aom.actualTakeOffDateTimeUTC,'%Y/%m/%d %H:%i') AS actualoff,\n\
     date_format(aom.actualLandingDateTimeUTC,'%Y/%m/%d %H:%i')  AS actualon,\n\
     date_format(aom.actualArrivalDateTimeUTC,'%Y/%m/%d %H:%i') AS actualin,\n\
-    case when ac.aircraftTypeId = 1 then 4 else 7 end as sequenceposition,\n\
+    case when ac.aircraftTypeId = 1 then 4 when ac.aircraftTypeId = 30 then 9 else 7 end as sequenceposition, \n\
     0 as crewnotified,\n\
     null AS reqOCF\n\
 from\n\
@@ -548,10 +546,9 @@ where\n\
     aom.scheduledDepartureDateTimeUTC >= date_format(date_sub('${windowStart}', interval 21 day),'%Y/%m/%d %H:%i')\n\
     and aom.scheduledDepartureDateTimeUTC <  date_format(date_add('${windowEnd}', interval 5 day),'%Y/%m/%d %H:%i')\n\
     and ac.tailNumber = aom.aircraftRegistration\n\
-    and UPPER(aom.aircraftRegistration) like 'N%UP' \n\
+    and (UPPER(aom.aircraftRegistration) like 'N%UP' or UPPER(aom.aircraftRegistration)='N489MD')\n\
     and aom.fromAirportId is not null and aom.toAirportId is not null\n\
     and aom.airopsId is not null \n\
-    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
 union all\n\
 select \n\
     'mtcnote' AS rowtype, \n\
@@ -572,7 +569,7 @@ select \n\
     null AS actualoff, \n\
     null AS actualon, \n\
     null AS actualin, \n\
-    case when ac.aircraftTypeId = 1 then 4 else 7 end as sequenceposition, \n\
+    case when ac.aircraftTypeId = 1 then 4 when ac.aircraftTypeId = 30 then 9 else 7 end as sequenceposition, \n\
     null AS crewnotified, \n\
     0 AS reqOCF \n\
 from \n\
@@ -582,11 +579,10 @@ from \n\
 where \n\
     IFNULL(aode.actualStartDateTimeUTC, aode.scheduledStartDateTimeUTC) <= '${windowEnd}'  \n\
     and IFNULL(aode.actualEndDateTimeUTC, aode.scheduledEndDateTimeUTC) >= date_format(date_sub('${windowStart}', interval 21 day),'%Y/%m/%d %H:%i')  \n\
-    and UPPER(ac.tailNumber) like 'N%UP' \n\
+    and (UPPER(ac.tailNumber) like 'N%UP' or UPPER(ac.tailNumber)='N489MD') \n\
     and UPPER(aode.legType) in ('M', 'AOG', '!C!','LMX','INSR') \n\
-    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL')\n\
+    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL')\n\
     and aode.airportId is not null\n\
-    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
 order by aircraftid, rec_outtime"
 
 
@@ -612,8 +608,8 @@ where \n\
     IFNULL(aode.actualStartDateTimeUTC, aode.scheduledStartDateTimeUTC) < '${windowEnd}' and \n\
     IFNULL(aode.actualEndDateTimeUTC, aode.scheduledEndDateTimeUTC) > '${windowStart}' and \n\
     UPPER(aode.legType) in ('M', 'AOG', '!C!','LMX','INSR') and \n\
-    UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL') and \n\
-    UPPER(ac.tailNumber) like 'N%UP'\n\
+    UPPER(act.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL') and \n\
+    (UPPER(ac.tailNumber) like 'N%UP' or UPPER(ac.tailNumber)='N489MD')\n\
     and aode.airportId is not null\n\
 order by \n\
     currentstarttime"
@@ -704,7 +700,7 @@ from \n\
 ) apt order by icao"
 
 
-airportFitSQL = "select 0 as airportid, null as icao from dual where 1=0"
+irportFitSQL = "select 0 as airportid, null as icao from dual where 1=0"
 
 
 exclusionSQL = "select 0 as exc_type, 0 as first_value, 0 as second_value from dual where 1=0"
@@ -724,47 +720,50 @@ left join Airport apt on apt.airportid = c.baseairportid\n\
 order by crewId"
 
 
-bwCrewPairDataSQL = "select distinct\n\
+bwCrewPairDataSQL ="select distinct\n\
     upper(aocd.crewCode) as employeenumber,\n\
-    act.typeName as name,\n\
-    case when ac.aircraftTypeId = 1 then 5 else 11 end as aircraftTypeID,\n\
+    ifnull(act.typeName,act1.typeName) as name,\n\
+    case when ac.aircraftTypeId = 1 then 5 when ac.aircraftTypeId = 30 then 20 else 11 end as aircraftTypeID, \n\
     date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS starttime,\n\
     date_format(aocd.offDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS endtime,\n\
     aocd.crewId,\n\
     aocd.crewName as fileas,\n\
     aocd.airopsCrewDutyId as crewassignmentid,\n\
-    ac.aircraftid,\n\
-    aom.aircraftRegistration as registration,\n\
+    ifnull(ac.aircraftid,ac1.aircraftId) as aircraftId,\n\
+    ifnull(aom.aircraftRegistration,aocd.aircraftRegistration) as registration,\n\
     case when UPPER(left(aocd.crewRank,5)) = 'PILOT' then 1 when UPPER (aocd.crewRank) ='PIC' then 1 else 2 end as position,\n\
     9999 as scenarioid\n\
 from\n\
     AiropsCrewDuty aocd\n\
-    inner join AiropsCrewDutyMovement aocdm on aocd.airopscrewdutyid = aocdm.airopscrewdutyid\n\
-    inner join vairopsmovement aom on aom.airopsmovementid = aocdm.airopsmovementid\n\
-    inner join Aircraft ac on ac.tailNumber = aom.aircraftRegistration\n\
-    inner join AircraftType act on act.aircraftTypeId = ac.aircraftTypeId\n\
+    left join AiropsCrewDutyMovement aocdm on aocd.airopscrewdutyid = aocdm.airopscrewdutyid\n\
+    left join vairopsmovement aom on aom.airopsmovementid = aocdm.airopsmovementid\n\
+    left join Aircraft ac on ac.tailNumber = aom.aircraftRegistration\n\
+    left join AircraftType act on act.aircraftTypeId = ac.aircraftTypeId\n\
+    left join Aircraft ac1 on ac1.tailNumber = aocd.aircraftRegistration\n\
+    left join AircraftType act1 on act1.aircraftTypeId = ac1.aircraftTypeId\n\
 where\n\
     aocd.onDutyDateTimeUTC <= '${windowStart}'\n\
     and aocd.offDutyDateTimeUTC >= date_format(date_sub('${windowStart}' , interval 10 hour), '%Y/%m/%d %H:%i')\n\
-    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL')\n\
-    and UPPER(ac.tailNumber) like 'N%UP'\n\
-    and aocd.crewId is not null\n\
-order by\n\
-    9, 11, 11 desc, 4 desc"
+    and UPPER(ifnull(act.typeName,act1.typeName)) in ('KING AIR 350I', 'CE-750', 'CE-560-XL')\n\
+    and (UPPER(ifnull(ac.tailNumber,ac1.tailNumber)) like 'N%UP' or UPPER(ifnull(ac.tailNumber,ac1.tailNumber))='N489MD')\n\
+     and aocd.crewId is not null\n\
+order by   9, 11, 4 desc"
 
-bwCrewDataSQL = "select distinct\n\
+
+bwCrewDataSQL = "select * from (\n\
+  select distinct\n\
     upper(aocd.crewCode) as employeenumber,\n\
-    case when upper(act.typeName) = 'KING AIR 350I' then 'Bravo' else 'Excel' end as name,\n\
-    case when ac.aircraftTypeId = 1 then 5 else 11 end as aircraftTypeID,\n\
+    case when upper(act.typeName) = 'KING AIR 350I' then 'Bravo' when upper(act.typeName) = 'CE-750' then 'CX' else 'Excel' end as name,\n\
+    case when ac.aircraftTypeId = 1 then 5 when ac.aircraftTypeId = 30 then 20 else 11 end as aircraftTypeID,\n\
     date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS starttime,\n\
     MAX(date_format(aocd.offDutyDateTimeUTC, '%Y/%m/%d %H:%i')) AS endtime,\n\
     aocd.crewId,\n\
     aocd.crewName as fileas,\n\
     aocd.airopsCrewDutyId as crewassignmentid,\n\
-    ac.aircraftid,\n\
-    aom.aircraftRegistration as registration,\n\
+    ac.aircraftid as aircraftId,\n\
+    ifnull(aom.aircraftRegistration,aocd.aircraftRegistration) as registration,\n\
     case when UPPER(left(aocd.crewRank,5)) = 'PILOT' then 1 when UPPER (aocd.crewRank) ='PIC' then 1 else 2 end as position,\n\
-    9999 as scenarioid\n\
+    9991 as scenarioid\n\
 from\n\
     AiropsCrewDuty aocd,\n\
     AiropsCrewDutyMovement aocdm,\n\
@@ -779,30 +778,60 @@ where\n\
     and aom.aircraftRegistration is not null\n\
     and aocd.onDutyDateTimeUTC < date_format(date_add('${windowEnd}', interval 1 day), '%Y/%m/%d %H:%i')\n\
     and aocd.offDutyDateTimeUTC > date_format(date_sub('${windowStart}', interval 5 day), '%Y/%m/%d %H:%i')\n\
-    and ac.tailNumber like ('N%UP') \n\
-    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL')\n\
+    and (ac.tailNumber like ('N%UP') or UPPER(ac.tailNumber)='N489MD')\n\
+    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL')\n\
     and aocd.crewId is not null\n\
-    and aocdm.airopsMovementId not in (1)\n\
-    and aocd.airopsCrewDutyId not in (1)\n\
+    and aocdm.airopsMovementId not in (486601)\n\
+    and aocd.airopsCrewDutyId not in (943540, 941890)\n\
 GROUP by aocd.crewId,\n\
     ac.aircraftTypeId,\n\
     date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i'),\n\
-    ac.aircraftid \n\
-order by 1,4,2,10"
+    ac.aircraftid\n\
+union\n\
+select distinct\n\
+    upper(aocd.crewCode) as employeenumber,\n\
+    case when upper(act.typeName) = 'KING AIR 350I' then 'Bravo' when upper(act.typeName) = 'CE-750' then 'CX' else 'Excel' end as name,\n\
+    case when ac.aircraftTypeId = 1 then 5 when ac.aircraftTypeId = 30 then 20 else 11 end as aircraftTypeID,\n\
+    date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS starttime,\n\
+    MAX(date_format(aocd.offDutyDateTimeUTC, '%Y/%m/%d %H:%i')) AS endtime,\n\
+    aocd.crewId,\n\
+    aocd.crewName as fileas,\n\
+    aocd.airopsCrewDutyId as crewassignmentid,\n\
+    ac.aircraftid,\n\
+    aocd.aircraftRegistration as registration,\n\
+    case when UPPER(left(aocd.crewRank,5)) = 'PILOT' then 1 when UPPER (aocd.crewRank) ='PIC' then 1 else 2 end as position,\n\
+    9992 as scenarioid\n\
+from\n\
+    AiropsCrewDuty aocd\n\
+    inner join Aircraft ac on ac.tailNumber = aocd.aircraftRegistration\n\
+    inner join AircraftType act on act.aircraftTypeId = ac.aircraftTypeId\n\
+where\n\
+    aocd.aircraftRegistration is not null\n\
+    and aocd.onDutyDateTimeUTC < date_format(date_add('${windowEnd}', interval 1 day), '%Y/%m/%d %H:%i')\n\
+    and aocd.offDutyDateTimeUTC > date_format(date_sub('${windowStart}', interval 5 day), '%Y/%m/%d %H:%i')\n\
+    and (ac.tailNumber like ('N%UP') or UPPER(ac.tailNumber)='N489MD')\n\
+    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL')\n\
+    and aocd.crewId is not null\n\
+GROUP by aocd.crewId,\n\
+    ac.aircraftTypeId,\n\
+    date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i'),\n\
+    ac.aircraftid\n\
+)sa order by employeenumber ,starttime,name,scenarioid,registration"
 
 
 
 ssCrewDataSQL = "select distinct\n\
     cdd.crewCode as zbadgeid,\n\
-    case when cdd.aircrafttypeid = 1 then 'Bravo' else 'Excel' end as zdeptdesc,\n\
+    case when cdd.aircrafttypeid = 1 then 'Bravo' when cdd.aircrafttypeid = 30 then 'CX' else 'Excel' end as zdeptdesc,\n\
     date_format(cdd.dutydate, '%Y/%m/%d %H:%i') as dtdate,\n\
     cdd.crewCode as zlname,\n\
     left(cdd.crewCode,1) as zfname,\n\
     null as zmname,\n\
     cdd.crewid AS empid,\n\
     cdd.crewid as lempinfoid,\n\
-    case when regioncode = 'CA' then 77 when regioncode = 'IOE' then 18 else 16 end as lpostid,\n\
-    case when regioncode = 'CA' then 'Check Airman' when regioncode = 'IOE' then 'IOE Pairing Status' else 'Unrestricted' end as zpostdesc,\n\
+    case when regioncode = 'CA' then 77 when regioncode = 'IOE' then 18 when 'SC' then 25 else 16 end as lpostid,\n\
+    IFNULL(cdd.qualification,0) as qualification,\n\
+    case when regioncode = 'CA' then 'Check Airman' when regioncode = 'IOE' then 'IOE Pairing Status' when 'SC' then 'Standards Captain' else 'Unrestricted' end as zpostdesc,\n\
     cdd.position as zshiftdesc,\n\
     '' as zacccodeid,\n\
     '' as zacccodedesc,\n\
@@ -811,9 +840,11 @@ from\n\
     crewdutydate cdd\n\
 where\n\
     cdd.dutydate < date_format(date_add('${windowEnd}', interval 3 day), '%Y/%m/%d %H:%i')\n\
+    and cdd.crewId <> 74064\n\
+    and cdd.crewId <> 79690\n\
     and cdd.dutydate > date_format(date_sub('${windowStart}', interval 14 day), '%Y/%m/%d %H:%i')"
     
-csCrewDataSQL = "select\n\
+csCrewDataSQL = "select distinct\n\
     aocd.crewId,\n\
     date_format(aocd.onDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS starttime,\n\
     date_format(aocd.offDutyDateTimeUTC, '%Y/%m/%d %H:%i') AS endtime,\n\
@@ -830,22 +861,17 @@ csCrewDataSQL = "select\n\
     date_format(aom.lastUpdateDate, '%Y/%m/%d %H:%i') as lastupdated,\n\
     9999 as scenarioid\n\
 from\n\
-    AiropsCrewDutyMovement aocdm\n\
-    inner join AiropsCrewDuty aocd on aocd.airopsCrewDutyId = aocdm.airopsCrewDutyId\n\
+    AiropsCrewDuty aocd\n\
+    inner join AiropsCrewDutyMovement aocdm on aocd.airopsCrewDutyId = aocdm.airopsCrewDutyId\n\
     inner join vairopsmovement aom on aom.airopsMovementId = aocdm.airopsMovementId\n\
-    inner join Flight f on f.flightId = aom.atlasFlightId\n\
-    inner join AircraftType act on act.aircraftTypeId = f.requestedAircraftId\n\
     inner join Aircraft ac on ac.tailNumber = aom.aircraftRegistration\n\
+    inner join AircraftType act on act.aircraftTypeId = ac.aircraftTypeId\n\
 where 1 = 1\n\
-    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-560-XL')\n\
-    and UPPER(f.status) in ('LOGGED','FLOWN','BOOKED','APPROVED')\n\
+    and UPPER(act.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL')\n\
     and aocd.onDutyDateTimeUTC < date_format(date_add('${windowEnd}', interval 1 day), '%Y/%m/%d %H:%i')\n\
     and aocd.offDutyDateTimeUTC > date_format(date_sub('${windowStart}', interval 14 day), '%Y/%m/%d %H:%i')\n\
-    and UPPER(ac.tailNumber) like 'N%UP'  \n\
+    and (UPPER(ac.tailNumber) like 'N%UP' or UPPER(ac.tailNumber)='N489MD') \n\
     and aocd.crewId is not null\n\
-    and aocd.aircraftRegistration is not null \n\
-    and aocdm.airopsMovementId not in (1) \n\
-    and aocd.airopsCrewDutyId not in (1) \n\
 order by \n\
     crewid, scheduled_on, starttime"
 
@@ -878,16 +904,18 @@ pairConstraintsSQL = "select\n\
 from dual where 1=0"
 
 # use SQL below for running on against MySQL db on your workstation
-intnlCertSQL = "select aircraftid from Aircraft where tailNumber like 'N%UP' and aircraftTypeId in \n\
+intnlCertSQL = "select aircraftid from Aircraft where (tailNumber like 'N%UP' or UPPER(tailNumber)='N489MD') and aircraftTypeId in \n\
 (select aircraftTypeId from AircraftType where UPPER(typeName) in ('KING AIR 350I', 'CE-560-XL'))"
 
 
-demandnumbyzoneSQL = "select null as CJ1_num,\n\
-                             null as BRV_num,\n\
-	                     null as CJ3_num,\n\
-	                     null as EXL_num,\n\
-	                     null as Sov_num\n\
-	                    from dual where 1=0"
+demandnumbyzoneSQL = "select 0 as CJ1_num,\n\
+                             10 as BRV_num,\n\
+	                     0 as CJ3_num,\n\
+                             00 as CJ4_num,\n\
+	                     1 as EXL_num,\n\
+	                     0 as Sov_num,\n\
+                             10 as CX_num\n\
+	                    from dual where 1=1"
 
 #cstravelSQL = "select null as crewid, \n\
 #   null as departure_aptid,\n\
@@ -940,22 +968,24 @@ runFillMissingRepoSQL = "CALL proc_createPositionLeg('${windowStart}','${windowE
 
 getBlockTimeSQL = "select\n\
   CASE WHEN LEFT(aircraftType,4)='B350' THEN 2 \n\
+       WHEN aircraftType='C750' THEN 6 \n\
        WHEN aircraftType='C56XWU' THEN 3 \n\
   END aircraftCd,\n\
   fromAirportId,\n\
   toAirportId,\n\
-  MIN( CASE WHEN actualArrivalDateTimeUTC IS NULL THEN scheduledBlockTime ELSE actualBlockTime END) as avgBlockTime \n\
+  MIN(IFNULL(actualBlockTime, scheduledBlockTime)) as avgBlockTime \n\
 from AiropsMovement \n\
 where \n\
     scheduledDepartureDateTimeUTC >= '${windowStart}'\n\
     and scheduledDepartureDateTimeUTC < '${windowEnd}'\n\
-    and (LEFT(aircraftType,4)='B350' or aircraftType='C56XWU') \n\
+    and (LEFT(aircraftType,4)='B350' or aircraftType in ('C750', 'C56XWU')) \n\
     and fromAirportId is not null \n\
     and toAirportId is not null \n\
     and fromAirportId <> toAirportId \n\
-    and scheduledBlockTime > 0 \n\
+    and IFNULL(actualBlockTime, scheduledBlockTime) > 0 \n\
 group by \n\
   CASE WHEN LEFT(aircraftType,4)='B350' THEN 5 \n\
+       WHEN aircraftType='C750' THEN 20 \n\
        WHEN aircraftType='C56XWU' THEN 11 \n\
   END,\n\
   fromAirportId,\n\
