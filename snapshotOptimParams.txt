@@ -225,7 +225,7 @@ Bravo_oper_cost  = 1172.00
 Bravo_taxi_cost  =   67.1 # MADE THIS UP
 Bravo_std_rev    = 4295.00
 #Bravo_maxUpgrades  = 5
-Bravo_maxUpgrades  = 5
+Bravo_maxUpgrades  = 3
 Bravo_capacity     = 8
 Bravo_mac_cost     = 1172.00
 Bravo_pre_flight   = 90 #60 90
@@ -261,7 +261,7 @@ XLS_oper_cost  = 2192.00
 XLS_taxi_cost  =  131.5 # MADE THIS UP
 XLS_std_rev    = 7495.00
 #XLS_maxUpgrades  = 2
-XLS_maxUpgrades  = 2
+XLS_maxUpgrades  = 0
 XLS_capacity     = 9
 XLS_mac_cost     = 2192.00
 XLS_pre_flight   = 60
@@ -367,6 +367,7 @@ where\n\
     and aom.aircraftRegistration = ac.tailNumber\n\
     and (UPPER(aom.aircraftRegistration) like 'N%UP' OR UPPER(aom.aircraftRegistration)='N489MD')\n\
     and aom.fromAirportId is not null and aom.toAirportId is not null\n\
+    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
 order by \n\
 rec_outtime"
 
@@ -433,6 +434,7 @@ where \n\
     and UPPER(at.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL') \n\
     and gdl.cancelRequestAcceptedDate is NULL \n\
     AND  ( (right(f.tailNumber,2) = 'UP' and length(f.tailNumber) <> 0) OR (f.operatorId = 7 and length(f.operatorId) <> 0)) \n\
+    AND f.flightId not in (select atlasFlightId from AiropsMovement where aircraftRegistration like 'N9%UP' and scheduledDepartureDateTimeUTC >= '${windowStart}' and scheduledDepartureDateTimeUTC < '${windowEnd}' and atlasFlightId is not null) \n\
 order by\n\
  outtime"
 
@@ -516,6 +518,7 @@ from  \n\
 where  \n\
   UPPER(act.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL') \n\
   and (UPPER(ac.tailNumber) like 'N%UP' or UPPER(ac.tailNumber)='N489MD') \n\
+  and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
 union all \n\
 select\n\
     'mgdleg' AS rowtype,\n\
@@ -549,6 +552,7 @@ where\n\
     and (UPPER(aom.aircraftRegistration) like 'N%UP' or UPPER(aom.aircraftRegistration)='N489MD')\n\
     and aom.fromAirportId is not null and aom.toAirportId is not null\n\
     and aom.airopsId is not null \n\
+    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
 union all\n\
 select \n\
     'mtcnote' AS rowtype, \n\
@@ -583,6 +587,7 @@ where \n\
     and UPPER(aode.legType) in ('M', 'AOG', '!C!','LMX','INSR') \n\
     and UPPER(act.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL')\n\
     and aode.airportId is not null\n\
+    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
 order by aircraftid, rec_outtime"
 
 
@@ -611,6 +616,7 @@ where \n\
     UPPER(act.typeName) in ('KING AIR 350I', 'CE-750', 'CE-560-XL') and \n\
     (UPPER(ac.tailNumber) like 'N%UP' or UPPER(ac.tailNumber)='N489MD')\n\
     and aode.airportId is not null\n\
+    and ac.tailNumber not in ('N900UP','N901UP','N902UP','N893UP')\n\
 order by \n\
     currentstarttime"
     
