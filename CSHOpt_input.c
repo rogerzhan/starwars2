@@ -2484,7 +2484,7 @@ static int readACTypeList(void)
 //			writeWarningData(myconn); exit(1);
 //		}
 //		acTypeList[x].preFlightTm = atof(paramVal);
-		acTypeList[x].preFlightTm = 60; //The same pre_flight is reconsidered for all acTypes. Added by Ali (6/29/2018).
+		acTypeList[x].preFlightTm = optParam.preFlightTm; //The same pre_flight is reconsidered for all acTypes. Added by Ali (6/29/2018).
 	}
 
 	/* required: recovery option */
@@ -8443,6 +8443,7 @@ textToSS_CrewData(MYSQL_ROW row)
 	//	logMsg(logFile,"%s Line %d, null qualification in textToSS_CrewData().\n",__FILE__,__LINE__);
 	//	writeWarningData(myconn); exit(1);
 	//}
+//	ssCdPtr->qualification = atoi(row[SS_qualification]);
     ssCdPtr->qualification = _strdup(row[SS_qualification]); //Ali (6/12/2018)
 
 	if(!(ssCdPtr->zpostdesc = _strdup(row[SS_zpostdesc]))) {
@@ -8539,6 +8540,7 @@ crewDataToSS_CrewData(SS_CrewData *ssCdPtr0, CrewData *cdPtr)
 	ssCdPtr->lempid = 0;
 	ssCdPtr->lempinfoid = 0;
 	ssCdPtr->lpostid = 0;
+//	ssCdPtr->qualification = 0; //AD20171016
 	ssCdPtr->qualification = ""; //Ali (6/12/2018)
 	//ssCdPtr->zpostdesc = "Rec not in SS";
 	ssCdPtr->zpostdesc = "Unrestricted";
@@ -9156,7 +9158,7 @@ showCsCrewDataFooter(void)
 }
 
 static void
-showCsCrewData(CS_CrewData *cdPtr)
+showCsCrewData(CS_CrewData *cdPtr) 
 {
 	char dbuf1[32];
 	char dbuf2[32];
@@ -9200,42 +9202,42 @@ showCsCrewData(CS_CrewData *cdPtr)
 }
 
 static void
-showSS_CrewDataHeader(char *msg)
+showSS_CrewDataHeader(char *msg) //Modified by Ali (7/10/2018)
 {
 	fprintf(logFile,"%s\n", msg);
-	fprintf(logFile,"+----------+-----------+-----------------+----------------+-------------+-------------+------+------+-------+------+------------------------+--------+-------+");
-	fprintf(logFile,"------+------------------------------+-------------------------------------+\n");
+	fprintf(logFile,"+----------+-----------+------------------+----------------+-------------+-------------+-----------+-----------+-----------+------------------------+--------+------+");
+	fprintf(logFile,"----------+------------------------------+-------------------------------------+\n");
 
-	fprintf(logFile,"|          |           |                 |                |             |             |      |  emp |       |                        |        |      |");
-	fprintf(logFile," zacc |                              |                                     |\n");
-
-
-	fprintf(logFile,"|          |           |                 |                |             |             | lemp | info | lpost |                        | zshift | qual |");
-	fprintf(logFile," code |                              |                                     |\n");
+	fprintf(logFile,"|          |           |                  |                |             |             |           |  emp      |           |                        |        |      |");
+	fprintf(logFile," zacc     |                              |                                     |\n");
 
 
-	fprintf(logFile,"| zbadgeid | zdeptdesc | dtdate          | zlname         | zfname      | zmname      |   id |   id |    id | zpostdesc              | desc   |   id |");
-	fprintf(logFile," id   | zacccodedesc                 | znote                               |\n");
+	fprintf(logFile,"|          |           |                  |                |             |             |     lemp  | info      | lpost     |                        | zshift | qual |");
+	fprintf(logFile," code     |                              |                                     |\n");
 
 
-	fprintf(logFile,"+----------+-----------+-----------------+----------------+-------------+-------------+------+------+-------+------------------------+--------+------|");
-	fprintf(logFile,"------+------------------------------+-------------------------------------+\n");
+	fprintf(logFile,"| zbadgeid | zdeptdesc | dtdate           | zlname         | zfname      | zmname      |       id  |   id      |    id     | zpostdesc              | desc   |   id |");
+	fprintf(logFile," id       | zacccodedesc                 | znote                               |\n");
+
+
+	fprintf(logFile,"+----------+-----------+------------------+----------------+-------------+-------------+-----------+-----------+-----------+------------------------+--------+------|");
+	fprintf(logFile,"----------+------------------------------+-------------------------------------+\n");
 }
 
 static void
-showSS_CrewDataFooter(void)
+showSS_CrewDataFooter(void) //Modified by Ali (7/10/2018)
 {
-	fprintf(logFile,"+----------+-----------+-----------------+----------------+-------------+-------------+------+------+-------+------------------------+--------+------|");
-	fprintf(logFile,"------+------------------------------+-------------------------------------+\n");
+	fprintf(logFile,"+----------+-----------+------------------+----------------+-------------+-------------+-----------+-----------+-----------+------------------------+--------+------|");
+	fprintf(logFile,"----------+------------------------------+-------------------------------------+\n");
 	fprintf(logFile,"\n\n\n\n");
 }
 
 static void
-showSS_CrewData(SS_CrewData *ssCdPtr)
+showSS_CrewData(SS_CrewData *ssCdPtr) //Modified by Ali (7/10/2018)
 {
 	char dbuf1[32];
 
-	fprintf(logFile,"| %-8s | %-9s | %-16s | %-14s | %-11s | %-11s | %4d | %4d | %5d | %-22s | %-6s | %-4s | %-28s | %4d | %-35s | %5d | %5d |\n",
+	fprintf(logFile,"| %-8s | %-9s | %-16s | %-14s | %-11s | %-11s | %9d | %9d | %9d | %-22s | %-6s | %-4s | %5d | %-28s | %-35s |\n",
 		ssCdPtr->zbadgeid,
 		ssCdPtr->zdeptdesc,
 		dt_DateTimeToDateTimeString(ssCdPtr->dtdate, dbuf1, "%Y/%m/%d %H:%M"),
@@ -9247,12 +9249,12 @@ showSS_CrewData(SS_CrewData *ssCdPtr)
 		ssCdPtr->lpostid,
 		ssCdPtr->zpostdesc,
 		ssCdPtr->zshiftdesc,
+		ssCdPtr->qualification, //AD20171016
 		ssCdPtr->zacccodeid,
 		(ssCdPtr->zacccodedesc) ? ssCdPtr->zacccodedesc : "",
-		ssCdPtr->qualification, //AD20171016
-		(ssCdPtr->znote) ? ssCdPtr->znote : "",
-		(ssCdPtr->baseAirportID) ? ssCdPtr->baseAirportID : 0,
-	    (ssCdPtr->crewID)? ssCdPtr->crewID : 0 );
+		(ssCdPtr->znote) ? ssCdPtr->znote : "");
+//		(ssCdPtr->baseAirportID) ? ssCdPtr->baseAirportID : 0,
+//	    (ssCdPtr->crewID)? ssCdPtr->crewID : 0 );
 }
 
 static void
@@ -10786,6 +10788,7 @@ static int
 readBwCrewData(MY_CONNECTION *myconn)
 {
 
+	int prior_crewassignmentid = 0; //(Added by Ali-- 7/6/2018)
 	extern char *bwCrewDataSQL;
 	MYSQL_RES *res;
 	MYSQL_FIELD *cols;
@@ -10819,6 +10822,11 @@ readBwCrewData(MY_CONNECTION *myconn)
 		if(! row)
 			break;
 		crwPtr = textToCrewData(row);
+
+		//The following IF is used to overcome possible duplicates in bwCrewDataSQL (Added by Ali-- 7/6/2018)
+        if (prior_crewassignmentid == crwPtr->crewassignmentid)
+			continue;
+		prior_crewassignmentid = crwPtr->crewassignmentid;
 
 		//logMsg(logFile, "readBwCrewData for loop, rows = %d \n", rows);
 
@@ -19842,31 +19850,41 @@ typedef struct updatemxdata {
 
 
 /********************************************************************************
- *	Function   runFillMissingRepo - 06/02/2017 ANG
+ *	Function   runFillMissingRepo - 07/09/2018 Ali
  *	Purpose:  call procedure in mysql to fill in missing repo and crew assignment info, 
  *            insert into separate tables.
  ********************************************************************************/
 static int
 runFillMissingRepo(MY_CONNECTION *myconn)
 {
-	extern char *runFillMissingRepoSQL;
+       extern char *runFillMissingRepoSQL;
 
-	MYSQL_RES *res;
-	MYSQL_FIELD *cols;
-	//MYSQL_ROW row;
-	//my_ulonglong rowCount, rows;
-	//int a;
-
-	if(!myDoQuery(myconn, runFillMissingRepoSQL, &res, &cols)) {
-		logMsg(logFile,"%s Line %d: db errno: %d: %s\n", __FILE__,__LINE__,myconn->my_errno, myconn->my_error_msg);
-		writeWarningData(myconn); //exit(1);
-	}
-
-	logMsg (logFile, "\n Procedure to fill in missing repo legs and missing crew assignments has been run successfully. \n");
-
-	mysql_free_result(res);
-	return(0);
+       MYSQL_RES *res;
+       MYSQL_FIELD *cols;
+       //MYSQL_ROW row;
+       //my_ulonglong rowCount, rows;
+       //int a;
+       //RLZ 07/09/2018 run the procedure 2nd time if the first time failed.
+       if(!myDoQuery(myconn, runFillMissingRepoSQL, &res, &cols)) {
+		   logMsg(logFile,"%s Line %d: db errno: %d: %s\n", __FILE__,__LINE__,myconn->my_errno, myconn->my_error_msg);
+		   writeWarningData(myconn);
+		   logMsg (logFile, "\n Procedure to fill in missing repo legs and missing crew assignments has been failed once. \n"); 
+		   //exit(1);
+		   
+		   if(!myDoQuery(myconn, runFillMissingRepoSQL, &res, &cols)) {
+			   logMsg(logFile,"%s Line %d: db errno: %d: %s\n", __FILE__,__LINE__,myconn->my_errno, myconn->my_error_msg);
+			   writeWarningData(myconn); 
+			   logMsg (logFile, "\n Procedure to fill in missing repo legs and missing crew assignments has been failed twice. \n");
+			   //exit(1);
+		   }
 }
+
+       logMsg (logFile, "\n Procedure to fill in missing repo legs and missing crew assignments has been run successfully. \n");
+
+       mysql_free_result(res);
+       return(0);
+}
+
 
 /********************************************************************************
  *	Function   readScheduleBlockTime - 07/07/2017 ANG

@@ -827,7 +827,11 @@ identifyImpossiblePairings (void)
 				crewPairMatrix[i][j] = -1;
 				crewPairMatrix[j][i] = -1;
 			}
-			
+			else if (crewList[i].isDup != crewList[j].isDup) //XLS+ - 06/07/11
+			{ // XLS+ pilots (copies) can only be paired with XLS+ pilots, so are CJ4's
+				crewPairMatrix[i][j] = -1;
+				crewPairMatrix[j][i] = -1;
+			}		
 			else if (!isAllowablePairing (cati, catj))
 			{
 				/*
@@ -1331,7 +1335,7 @@ static int
 copyExistingCrewPair (int i, CrewPair *cpList, int *ncp)
 {
 	int j, k;
-
+	
 	cpList[*(ncp)].crewPairID = oldCrewPairList[i].crewPairID;
 	cpList[*(ncp)].captainID = oldCrewPairList[i].captainID;
 	cpList[*(ncp)].flightOffID = oldCrewPairList[i].flightOffID;
@@ -1430,7 +1434,7 @@ addCrewPair (MatchingArc *matArc, CrewPair *cpList, int *ncp)
 		//	copyExistingCrewPair (i, cpList, ncp);
 		//	return 0;
 		//}
-
+		
 		//START - Above check is modified to accommodate DQ pairs - DQ - 12/09/2009 ANG
 		if ((((crewList[matArc->p1].crewID == oldCrewPairList[i].captainID) && 
 			(crewList[matArc->p2].crewID == oldCrewPairList[i].flightOffID)) ||
